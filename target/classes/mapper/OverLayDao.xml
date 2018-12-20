@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pers.hzh.gss.dao.OverLayDao">
+    <resultMap id="ResultMap" type="pers.hzh.gss.model.OverLay" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="title" property="title" jdbcType="VARCHAR" />
+        <result column="note" property="note" jdbcType="VARCHAR" />
+        <result column="point" property="point" jdbcType="VARCHAR" />
+        <result column="type" property="type" jdbcType="VARCHAR" />
+    </resultMap>
+    <select id="selectNoteByTitle" resultType="String">
+        select
+        note
+        from
+        overlay
+        where
+        title=#{title}
+    </select>
+    <select id="selectAllOverLay" resultMap="ResultMap">
+        select
+        id,title,note,point,type
+        from
+        overlay
+    </select>
+    <insert id="insertOverLay">
+        insert into overlay
+        (title,note,point,type)
+        values
+        (#{title},#{note},#{point},#{type})
+    </insert>
+    <delete id="deleteOverLayByTitle">
+        delete from overlay
+        where
+        title=#{title}
+    </delete>
+    <update id="updataNoteByTitle">
+        update overlay
+        set
+        note=#{note}
+        where
+        title=#{title}
+    </update>
+</mapper>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+        body, html {width: 100%;height: 100%;min-width:1024px;margin:0;font-family:"微软雅黑";overflow: hidden;}/**/
+        #control{width:200px;height:100%; margin-left:0px; float:left;}
+        #allmap{ width:1600px;height:100%; float:left;margin:5px 5px 5px 5px;}
+        p{margin:5px; font-size:14px;}
+    </style>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=In7eNWOLuUL7S9pUQpiBPXov06wYjGn7"></script>
+    <link rel="stylesheet" href="css/grid_map.css" />
+
+    <!--加载鼠标绘制工具-->
+    <script type="text/javascript" src="http://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.js"></script>
+    <link rel="stylesheet" href="http://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.css" />
+
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <title>crid map</title>
+</head>
+<body>
+
+<div id="control">
+    <div id ="grid_map_div1" class="sidebar1">
+        <ul class="sidebar_ul_1">
+            <li class="sidebar_li_1">
+                <a class="sidebar_a_1">主页</a>
+                <ul class="sidebar_ul_2">
+                    <li class="sidebar_li_2" id="add_marker" onclick="switchAddMarker_()"><img src="../image/logout.png" class="sidebar_img_2"><a class="sidebar_a_2">添加标记</a></li>
+                    <li class="sidebar_li_2" id="add_overlay"onclick="drawingManager_switch()"><img src="../image/logout.png" class="sidebar_img_2"><a class="sidebar_a_2">添加区域</a></li>
+                    <li class="sidebar_li_2" onclick="clearAll()"><img src="../image/logout.png" class="sidebar_img_2"><a class="sidebar_a_2">主</a></li>
+                    <li class="sidebar_li_2" ><img src="../image/logout.png" class="sidebar_img_2"><a class="sidebar_a_2">主</a></li>
+                    <li class="sidebar_li_2" ><img src="../image/logout.png" class="sidebar_img_2"><a class="sidebar_a_2">主</a></li>
+                </ul>
+            </li>
+            <li class="sidebar_li_1">
+                <a class="sidebar_a_1">主页</a>
+                <ul class="sidebar_ul_2">
+                    <li class="sidebar_li_2" ><img src="../image/logout.png" class="sidebar_img_2"><a class="sidebar_a_2">主</a></li>
+                    <li class="sidebar_li_2" ><img src="../image/logout.png" class="sidebar_img_2"><a class="sidebar_a_2">主</a></li>
+                    <li class="sidebar_li_2" ><img src="../image/logout.png" class="sidebar_img_2"><a class="sidebar_a_2">主</a></li>
+                    <li class="sidebar_li_2" ><img src="../image/logout.png" class="sidebar_img_2"><a class="sidebar_a_2">主</a></li>
+                    <li class="sidebar_li_2" ><img src="../image/logout.png" class="sidebar_img_2"><a class="sidebar_a_2">主</a></li>
+                </ul>
+            </li>
+            <li class="sidebar_li_1">
+                <a class="sidebar_a_1">标记列表</a>
+                <ul class="sidebar_ul_2"id="OverLay_List">
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="sidebar2">
+        <ul class="sidebar_bot">
+            <li >
+                <div style="border-top:1px solid #bbb;">
+                    <div class="tools"onclick="logout()">
+                        <img src="../image/logout.png" class="bar_bar_img">
+                    </div>
+                    <div class="tools"onclick="logout()">
+                        <img src="../image/logout.png" class="bar_bar_img">
+                    </div>
+                    <div class="tools"onclick="logout()">
+                        <img src="../image/logout.png" class="bar_bar_img">
+                    </div>
+                    <div class="tools"onclick="logout()">
+                        <img src="../image/logout.png" class="bar_bar_img">
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+<div id ="grid_map_div2"style="margin-left:210px;padding:0px 0px;height: 100%;  max-height:100%;">
+    <div id="allmap" style="border-style: none; margin: 0px;width:100%;height: 100%;  max-height:100%;"></div>
+</div>
+<script type="text/javascript"charset="utf-8">
+    var height=document.getElementById("grid_map_div2").offsetHeight;
+    document.getElementById("grid_map_div1").style.height= height-98 +"px";
+</script>
+
+</body>
+</html>
+<script type="text/javascript" src="js/grid_map.js" charset="utf-8"></script>

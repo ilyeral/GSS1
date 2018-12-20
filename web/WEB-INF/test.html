@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+        body, html {width: 100%;height: 100%;margin:0;font-family:"微软雅黑";}
+        #allmap{width:100%;height:500px;}
+        p{margin-left:5px; font-size:14px;}
+    </style>
+    <title>添加复杂内容的信息窗口</title>
+</head>
+<body>
+<p>点击标注点，可查看由文本，图片构成的复杂型信息窗口</p>
+<div style='height: 500px;width: 300px;border:1px solid rgba(123, 123, 123, 0.7);background-color: rgba(123, 123, 123, 0.7); '>
+    <h3 style='color: aliceblue;margin-left:25px '>标记点信息</h3>
+    <form  id='overlay' method='post' onsubmit='return false' action='##'>
+        <div style='width:300px; margin:15px auto; text-align: center'>
+            <input class='listinp' type='text'     name='point' id='point' style='display:none' />
+            <textarea name='reworkmes'      style='width:250px; height:20px;padding:10px 10px; border:1px #999999 solid; font-size:16px; color:#fff; background-color:rgba(31,27,24,0.7);OVERFLOW:   hidden;'></textarea>
+        </div>
+        <div style='width:300px; margin:15px auto; text-align: center'>
+            <textarea name='reworkmes'   cols='40'    style='width:250px; height:250px;padding:0px 10px; border:1px #999999 solid; font-size:14px; color:#fff; background-color:rgba(31,27,24,0.7);OVERFLOW:   hidden;'></textarea>
+        </div>
+        <div id='sub' style='float: left;margin: 10px 20px 10px 140px;width: 40px;height: 25px;display:none'>
+            <input type='button' onclick='login()' class='btn' value='提&nbsp;&nbsp;&nbsp;&nbsp;交'/>
+        </div>
+        <div id='canl' style='float: left;margin: 10px 20px 10px 20px;width: 40px;height: 25px;display:none'>
+            <input type='button' onclick='login()' class='btn' value='取&nbsp;&nbsp;&nbsp;&nbsp;消'/>
+        </div>
+        <div id='change' style='float: left;margin: 10px 20px 10px 20px;width: 40px;height: 25px;'>
+            <input type='button' onclick='login()' class='btn' value='修&nbsp;&nbsp;&nbsp;&nbsp;改'/>
+        </div>
+    </form>
+</div>
+
+<li id='li"+title+"' style='margin: 1px 2px 0px 2px;padding: 2px 2px 2px 2px;text-align: center;background-color:#8F8F8F; border-radius: 8px;border:1px solid rgba(123, 123, 123, 0.7);cursor:pointer; ' onclick='gotoOverLayByTitle("+title+")'><a id='a"+title+"' style='position:relative;display: block;  color: #f1f1f1;  text-decoration: none;text-align: left;font-size:18px;padding-left: 10px'>&nbsp;<div id='show_title'>"+title+"</div><div id='del_overlay_btn'>删除</div></a></li>
+
+</body>
+</html>

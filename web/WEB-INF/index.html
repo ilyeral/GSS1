@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Access-Control-Allow-Origin" content="*" />
+    <title>网格化粮食企业监管系统</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="css/reset.css" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/lrtk.css" />
+
+    <script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script>
+
+</head>
+<body style="  min-width:1903px;  max-width:100%;">
+    <div id="header" style="  position: -webkit-sticky;  position: sticky;  top: 0;">
+        <!--//上方导航栏-->
+        <ul class="navigation_bar">
+            <li class="logo_li">
+                <a href="https://"class="index_a">
+                    <div class="index_logo">
+                        <img src="./image/logo.png" class="logo_img">
+                    </div>
+                </a>
+            </li>
+            <li class="index_li">
+                <a href="https://"target="iframe_a">
+                    <div class="index_bar">
+                        <img src="./image/bar1.png" class="bar_img">
+                        <p class="bar_text">第一个</p>
+                    </div>
+                </a>
+            </li>
+            <li class="index_li">
+                <a href="https://"target="iframe_a">
+                    <div class="index_bar">
+                        <img src="./image/bar2.png" class="bar_img">
+                        <p class="bar_text">第二个</p>
+                    </div>
+                </a>
+            </li>
+            <li class="index_li">
+                <a href="https://"target="iframe_a">
+                    <div class="index_bar">
+                        <img src="./image/bar3.png" class="bar_img">
+                        <p class="bar_text">第三个</p>
+                    </div>
+                </a>
+            </li>
+            <li class="index_li">
+                <a href="https://"target="iframe_a">
+                    <div class="index_bar">
+                        <img src="./image/barn.png" class="bar_img">
+                        <p class="bar_text">第四个</p>
+                    </div>
+                </a>
+            </li>
+            <li class="index_right_li" style="float:right">
+                <div class="index_right_bar">
+                    <div class="index_right_bar_bar"onclick="logout()">
+                        <img src="./image/logout.png" class="bar_bar_img">
+                    </div>
+                    <a href="https://"target="iframe_a">
+                        <div class="index_right_bar_bar">
+                            <img src="./image/barn.png" class="bar_bar_img">
+                        </div>
+                    </a>
+                </div>
+            </li>
+            <li class="index_pers_li" style="float:right">
+                <a href="https://"target="iframe_a">
+                    <div class="index_pers_bar">
+                        <img src="./image/barn.png" class="index_pers_img">
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div style="margin-top:0px;padding:0px 0px;">
+        <ul class="sidebar" id="sidebar1">
+            <li ><a class="sidebar" href="/login"      target="iframe_a">主页</a></li>
+            <li ><a class="sidebar"href="http://"       target="iframe_a">新闻</a></li>
+            <li ><a class="sidebar"href="http://"       target="iframe_a">联系</a></li>
+            <li ><a class="sidebar"href="http://"       target="iframe_a">关于</a></li>
+        </ul>
+        <div id="div1" style="margin-left:60px;padding:0px 0px;height: 100%;  max-height:100%;">
+            <iframe id="iframe1" src="index/getMap" name="iframe_a"  scrolling="no" style="border-style: none; margin: 0px;width:100%;height: 100%;  max-height:100%;"></iframe>
+            <script type="text/javascript"charset="utf-8">
+                var height=document.getElementById("sidebar1").offsetHeight;
+                document.getElementById("div1").style.height= height-85 +"px";
+                document.getElementById("iframe1").style.height= height-85 +"px";
+            </script>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="js/main.js"charset="utf-8"></script>
+</body>
+</html>

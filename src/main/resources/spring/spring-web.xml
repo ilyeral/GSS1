@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/mvc
+	http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+    <!-- 配置SpringMVC -->
+    <!-- 1.开启SpringMVC注解模式 -->
+    <mvc:annotation-driven >
+        <mvc:message-converters register-defaults="true">
+            <!-- 配置Fastjson支持 -->
+            <bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>text/html;charset=UTF-8</value>
+                        <value>application/json</value>
+                    </list>
+                </property>
+                <property name="features">
+                    <list>
+                        <value>WriteMapNullValue</value>
+                        <value>QuoteFieldNames</value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+    <mvc:default-servlet-handler/>
+
+    <mvc:resources mapping="js/**" location="WEB-INF/js/" />
+    <mvc:resources mapping="/css/**" location="WEB-INF/css/" />
+    <mvc:resources mapping="/image/**" location="WEB-INF/image/" />
+
+    <mvc:resources mapping="index/js/**" location="WEB-INF/index/js/" />
+    <mvc:resources mapping="index//css/**" location="WEB-INF/index/css/" />
+    <mvc:resources mapping="index//image/**" location="WEB-INF/index/image/" />
+
+    <!-- 3.配置jsp 显示ViewResolver -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!--<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />-->
+        <property name="prefix" value="/WEB-INF/" />
+        <property name="suffix" value=".html" />
+    </bean>
+
+    <!-- 4.扫描web相关的bean -->
+    <context:component-scan base-package="pers.hzh.gss.controller" />
+
+    <!--配置拦截器-->
+    <!--<mvc:interceptors>-->
+        <!--<mvc:interceptor>-->
+            <!--&lt;!&ndash;-->
+                <!--/**的意思是所有文件夹及里面的子文件夹-->
+                <!--/*是所有文件夹，不含子文件夹-->
+                <!--/是web项目的根目录-->
+              <!--&ndash;&gt;-->
+            <!--<mvc:mapping path="/**" />-->
+            <!--&lt;!&ndash; 需排除拦截的地址 &ndash;&gt;-->
+            <!--<mvc:exclude-mapping path="/WEB-INF/**"/>-->
+            <!--<mvc:exclude-mapping path="/**/*.css"/>-->
+            <!--<mvc:exclude-mapping path="/**/*.js"/>-->
+            <!--<mvc:exclude-mapping path="/**/*.png"/>-->
+            <!--<mvc:exclude-mapping path="/**/*.jpg"/>-->
+            <!--<mvc:exclude-mapping path="/**/*.do"/>-->
+            <!--<bean id="commonInterceptor" class="pers.hzh.gss.web.WebSecurity"></bean> &lt;!&ndash;这个类就是我们自定义的Interceptor &ndash;&gt;-->
+        <!--</mvc:interceptor>-->
+        <!--&lt;!&ndash; 当设置多个拦截器时，先按顺序调用preHandle方法，然后逆序调用每个拦截器的postHandle和afterCompletion方法  &ndash;&gt;-->
+    <!--</mvc:interceptors>-->
+
+    <mvc:annotation-driven>
+        <mvc:message-converters register-defaults="true">
+            <!-- 避免IE执行AJAX时,返回JSON出现下载文件 -->
+            <bean id="fastJsonHttpMessageConverter" class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>application/json;charset=UTF-8</value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+</beans>

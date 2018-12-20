@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Access-Control-Allow-Origin" content="*" />
+    <title>网格化粮食企业监管系统-登录</title>
+    <link rel="stylesheet" type="text/css" href="css/reset.css" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/lrtk.css" />
+
+    <script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script>
+    <!--<script type="text/javascript">-->
+    <!--var targetProtocol = "https:";-->
+    <!--if (window.location.protocol != targetProtocol)-->
+    <!--window.location.href = targetProtocol + window.location.href.substring(window.location.protocol.length);-->
+    <!--</script>-->
+</head>
+
+<body>
+<!-- login页的背景 -->
+<section id="h1" class="jawbone-takeover-minimulti jawbone-hero">
+    <i class="jawbone-hero-image" data-hero-image-fixed="true" data-hero-image-fade="true" data-hero-min-opacity=".3" style="opacity: 1.05;"></i>
+    <div class="warp">
+        <a href="https://"><div class="logo"></div></a>
+        <div class="loginbox">
+            <div class="cd-user-modal-container">
+                <ul class="cd-switcher">
+                    <li><a id="a_user" href="javascript:tabClick('user')" style="border-right: 1px solid #bdbdbd;color:#ffffff;">账号登录</a></li>
+                    <li><a id="a_qrcode" href="javascript:tabClick('qr')">扫码登录</a></li>
+                </ul>
+                <!-- 账户登录页 -->
+                <div id="cd-login">
+                    <form class="cd-login" id="login_form" method="post" onsubmit="return false" action="##">
+                        <div class="list">
+                            <input class="listinp" type="text"      placeholder="用户名"   name="id" id="id" />
+                        </div>
+                        <div class="list1">
+                            <input class="listinp1" type="password" placeholder="密码"     name="password" id="password"/>
+                        </div>
+                        <div  class="code_line">
+                            <div id="CodeLine" style="display:none">
+                                <input class="vericode" type="text" placeholder="验证码" name="vericode" id="vericode" style="color: rgb(164, 164, 164);vertical-align: middle">
+                                <input type="hidden" value="true" name="isvericode">
+                                <img src="/vericode.do" alt="看不清，点击换一个" onclick="refreshCode()"style="margin-left:20px;width: 99px;height: 38px;vertical-align: middle"id="getcode" border="0" style="cursor:hand" width="99" height="38">
+                            </div>
+                        </div>
+                        <div class="login">
+                            <input type="button" onclick="login()" class="btn" value="登&nbsp;&nbsp;&nbsp;&nbsp;录"/>
+                        </div>
+
+
+                        <div class="listbox">
+                            <!--<a href="javascript:toQzoneLogin()"><div class="qqlogin"></div></a>-->
+                            <a href="https://" style="vertical-align:-2px;" class="forget">忘记密码？</a>
+
+                        </div>
+                        <div class="blank_line">
+                            <p id="login_result"style="color: #ffffff;font-family:Microsoft YaHei;font-size:15px; text-align:center;"></p>
+                        </div>
+                        <div class="blank_line">
+                        </div>
+                    </form>
+                </div>
+<button onclick="codeLineNone()">1</button>
+                <button onclick="cleanCode()">2</button>
+            </div>
+        </div>
+    </div>
+</section>
+<script type="text/javascript" src="js/login.js"charset="utf-8"></script>
+</body>
+</html>

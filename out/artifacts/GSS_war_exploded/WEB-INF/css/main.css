@@ -1,0 +1,25 @@
+.remember{ float:left; font-size:13px;  margin:15px auto; color:#ffffff;}
+.rememberbox{ margin-right:5px;}
+.remember:hover, .forget:hover {text-decoration:none;}
+.qqlogin{ width:20px; height:20px; background:url(../imges_new/qq.png); float:right;margin-top:11px; margin-left:-20px;}
+.qqlogin:hover{ background:url(../imges_new/qqhover.png);  cursor:pointer;}
+.register{ width:320px; height:18px;color:#bdbdbd;font-family:Microsoft YaHei; padding-bottom:15px; padding-top:55px; text-align:center; margin:0 auto;}
+.registerfree{ font-size:13px;  margin:10px auto; color:#ffffff;text-align:center;}
+.registerfree:hover {text-decoration:none; }
+.download{ width:282px; height:22px;margin:0 auto; margin-top:24px}
+.iPhone { width:140px; height:22px; float:left;}
+.Android{width:140px; height:22px; float:right;}
+.line{ width:1px; height:22px; background:#bdbdbd; float:left;}
+.iphoneicon, .Androidicon{ width:22px; height:22px; float:left; margin-left:30px; margin-right:10px;}
+.iphoneicon{ background:url(../imges_new/iphonecolor.png);}
+.iphoneicon:hover{ background:url(../imges_new/iphonehover.png);}
+.Androidicon{ background:url(../imges_new/Androidcolor.png);}
+.Androidicon:hover{ background:url(../imges_new/Androidhover.png);}
+.iPhone a, .Android a{ font-size:13px; color:#bdbdbd; font-family:Microsoft YaHei; text-decoration:none; line-height:22px}
+.iPhone a:hover, .Android a:hover{ color:#FFFFFF;}
+.progresstext{ width:400px; height:60px; text-align:left; margin:0 auto; margin-top:90px; }
+.li-first{font-family:Microsoft YaHei;font-size:12px; line-height:20px; color:#bdbdbd;}
+.codebox{ width:199px; height:199px; border:1px solid #bdbdbd; margin:0 auto; text-align:center;padding:3px 1px 1px 2px;background-color:#ffffff;}
+.biglist{ padding-top:20px;}
+.error_tip{ width:310px;border:1px #ff6f3d solid; font-size:12px;  margin:0 auto -10px auto; color:#ff6f3d;font-family:微软雅黑 Light; line-height:16px; text-align:justify; padding:3px;}
+.errorimg{ background:url(../imges_new/error.png) top no-repeat; width:14px; height:14px; float:left; margin:3px; }
