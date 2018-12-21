@@ -1114,7 +1114,7 @@
       <DefaultForCharset>0</DefaultForCharset>
     </collation>
     <table id="280" parent="2" name="manager"/>
-    <table id="281" parent="2" name="overlay"/>
+    <table id="281" parent="2" name="marker"/>
     <column id="282" parent="280" name="id">
       <Position>1</Position>
       <DataType>varchar(20)|0s</DataType>

@@ -16,7 +16,7 @@ var p={anchor:BMAP_ANCHOR_TOP_RIGHT,isOpen:true}//位置 右上  默认打开
 map.addControl(new BMap.OverviewMapControl(p));//小地图
 //map.addControl(new BMap.MapTypeControl());//地图类型
 map.setCurrentCity("哈尔滨"); // 仅当设置城市信息时，MapTypeControl的切换功能才能可用
-addAllOverLay_();
+add_all_marker();
 var marker = new BMap.Marker(point);        // 创建标注
 map.addOverlay(marker);                     // 将标注添加到地图中
 marker.addEventListener("click", function(){
@@ -79,15 +79,14 @@ function addmarker_(){/////////////////////////////////////////////添加marker
     title=document.getElementById('title').value;
     document.getElementById('point').value=point.lng+','+point.lat+'#';
     document.getElementById('type').value='marker';
-    console.log(getRootPath()+"index/addOverLay");//打印服务端返回的数据(调试用)
-    console.log($('#overlay').serialize());//打印服务端返回的数据(调试用)
+    console.log($('#marker_form').serialize());//打印服务端返回的数据(调试用)
     console.log(point.lng+','+point.lat+'#');//打印服务端返回的数据(调试用)
     $.ajax({
         //几个参数需要注意一下
         type: "POST",//方法类型
         dataType: "text",//预期服务器返回的数据类型
-        url: getRootPath()+"/index/addOverLay" ,//url
-        data: $('#overlay').serialize(),
+        url: getRootPath()+"/index/addMarker" ,//url
+        data: $('#marker_form').serialize(),
         contentType : "application/x-www-form-urlencoded",
         success: function (result) {
             console.log(result);//打印服务端返回的数据(调试用)
@@ -96,7 +95,7 @@ function addmarker_(){/////////////////////////////////////////////添加marker
                 marker.closeInfoWindow();
                 removeEventListener_();
                 addMarkerListener(marker);
-                addOverLay_Li_(title);
+                add_marker_to_li(title);
             }else if(result=="0"){
                 removeEventListener_();
                 alert("添加失败，请检查名称是否重复");
@@ -196,22 +195,22 @@ $(document).ready(function(){                             //////树形菜单控�
     $(".sidebar_a_1").click(function(){
         $(".sidebar_ul_2").hide();
         $(this).next().show();
-        $(".del_overlay_btn").hide();
+        $(".del_marker_btn").hide();
     });
 });
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////初始化覆盖物
-function addAllOverLay_(){///////////////////////////////////////////向地图中添加所有标记物-初始化
-    console.log("addAllOverLay_");
+function add_all_marker(){///////////////////////////////////////////向地图中添加所有标记物-初始化
+    console.log("add_all_marker");
     $.ajax({
         //几个参数需要注意一下
         type: "GET",//方法类型
         dataType: "json",//预期服务器返回的数据类型
-        url: getRootPath()+"/index/getAllOverLay" ,//url
+        url: getRootPath()+"/index/getAllMarker" ,//url
         success: function (result) {
             console.log(result);//打印服务端返回的数据(调试用)
             $.each(result,function (index, item) {
-                addOverLay_(item);
+                add_marker_by_item(item);
             });
         },
         error : function(e) {
@@ -220,16 +219,13 @@ function addAllOverLay_(){///////////////////////////////////////////向地图�
     });
 
 }
-function addOverLay_(item) {//////////////////////////////////添加标记物
-    console.log("addOverLay_");
-    var type=item.type;
-    if(type=="marker"){
-        addOverLay_Marker_(item)
-    }
-    addOverLay_Li_(item.title);
+function add_marker_by_item(item) {//////////////////////////////////添加标记物
+    console.log("add_marker_by_item");
+    add_marker_to_map(item)
+    add_marker_to_li(item.title);
 }
-function addOverLay_Marker_(item) {///////////////////////////添加标记物-marker
-    console.log("addOverLay_Marker_");
+function add_marker_to_map(item) {///////////////////////////添加标记物-marker
+    console.log("add_marker_to_map");
     var arr=item.point.split("#");
     var point_x=parseFloat(arr[0].split(",")[0]);
     var point_y=parseFloat(arr[0].split(",")[1]);
@@ -248,15 +244,16 @@ function del(n)
     var t=s.childNodes.length;
     s.removeChild(s.childNodes[n-1]);
 }
-function addOverLay_Li_(title)///////////////////////////////////////////////添加到列表
+function add_marker_to_li(title)///////////////////////////////////////////////添加到列表
 {
-    $("#OverLay_List").append("<li id='li"+title+"' class='sidebar_li_2_1' onclick='gotoOverLayByTitle("+title+")'><a id='a"+title+"' class='sidebar_a_2_1'>&nbsp;<div id='show_title"+title+"'class='show_title'>"+title+"</div><div id='del_overlay_btn"+title+"'class='del_overlay_btn'onclick='delete_overlay("+title+")'>删除</div></a><div id='del_overlay'></div></li>");
+
+    $("#Marker_List").append("<li id='li"+title+"' class='sidebar_li_2_1' onclick='goto_marker_by_title("+title+")'><a id='a"+title+"' class='sidebar_a_2_1'>&nbsp;<div id='show_title"+title+"'class='show_title'>"+title+"</div><div id='del_marker_btn"+title+"'class='del_marker_btn'onclick='delete_marker_by_title("+title+")'>删除</div></a><div id='del_marker'></div></li>");
     $("#li"+title).attr("class",'sidebar_li_2_1');
     $("#a"+title).attr("class",'sidebar_a_2_1');
     $("#show_title"+title).attr("class",'show_title');
-    $("#del_overlay_btn"+title).attr("class",'del_overlay_btn');
+    $("#del_marker_btn"+title).attr("class",'del_marker_btn');
 }
-function gotoOverLayByTitle(title) {////////////////////////////////////定位到覆盖物
+function goto_marker_by_title(title) {////////////////////////////////////定位到覆盖物
     var allOverlay = map.getOverlays();
     for (var i = 0; i < allOverlay.length; i++) {
         if (allOverlay[i].toString() == '[object Marker]') {
@@ -266,17 +263,17 @@ function gotoOverLayByTitle(title) {////////////////////////////////////定位�
             }
         }
     }
-    $(".del_overlay_btn").hide();
-    $("#del_overlay_btn"+title).show();
+    $(".del_marker_btn").hide();
+    $("#del_marker_btn"+title).show();
 }
-function delete_overlay(title) {////////////////////////////////////////删除覆盖物
+function delete_marker_by_title(title) {////////////////////////////////////////删除覆盖物
     var msg={"title":title};
 
     $.ajax({
         //几个参数需要注意一下
         type: "POST",//方法类型
         dataType: "text",//预期服务器返回的数据类型
-        url: getRootPath()+"/index/deleteOverLay" ,//url
+        url: getRootPath()+"/index/deleteMarker" ,//url
         data: msg,
         async:true,
         success: function (result) {

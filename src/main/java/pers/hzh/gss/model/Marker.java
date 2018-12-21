@@ -1,6 +1,6 @@
 package pers.hzh.gss.model;
 
-public class OverLay {
+public class Marker {
     private int id;
     private String title;
     private String note;
@@ -8,7 +8,7 @@ public class OverLay {
     private String type;
     private String level;
 
-    public OverLay(){}
+    public Marker(){}
     public int getId() {
         return id;
     }

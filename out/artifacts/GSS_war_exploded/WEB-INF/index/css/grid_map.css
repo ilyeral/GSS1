@@ -13,12 +13,12 @@ li.sidebar_li_2_1{ margin: 1px 2px 0px 2px;padding: 2px 2px 2px 2px;text-align: 
 img.sidebar_img_2{height: 30px;width: 30px;margin:0px 0px 0px 0px;}
 a.sidebar_a_2 {  display: block;  color: #f1f1f1;  text-decoration: none;text-align: center;font-size:12px;}
 a.sidebar_a_2_1 { position:relative; display: block;  color: #f1f1f1;  text-decoration: none;text-align: left;font-size:18px;padding-left: 10px}
-.del_overlay_btn{ position:absolute;top:0;right:0;color: #343443;border:1px solid rgba(114, 114, 114, 0.7);background-color: rgb(255, 19, 35);padding: 0 2px 0 2px;border-radius: 4px;margin-right: 5px;display:none;}
+.del_marker_btn{ position:absolute;top:0;right:0;color: #343443;border:1px solid rgba(114, 114, 114, 0.7);background-color: rgb(255, 19, 35);padding: 0 2px 0 2px;border-radius: 4px;margin-right: 5px;display:none;}
 .show_title{overflow: hidden;width:150px ; position:absolute;top:0;}
 .tools{float: left;width: 48px;height: 48px;border:1px solid #bbb;text-align:center;}
 .bar_bar_img{height: 30px;width: 30px;margin:5px 5px 5px 5px;}
 /*侧导航栏结束*/
 /*弹出窗*/
-.black_overlay{    display: none;    position: absolute;    top: 0%;    left: 0%;    width: 100%;    height: 100%;    background-color: black;    z-index:1001;    -moz-opacity: 0.8;    opacity:.80;    filter: alpha(opacity=88);    margin-left: 210px;}
-.white_content {    display: none;    position: absolute;    top: 25%;    left: 25%;    width: 55%;    height: 55%;    padding: 20px;    border: 10px solid orange;    background-color: white;    z-index:1002;    overflow: auto;}
+.black_overlay{    display: none;    position: absolute;    top: 0%;    left: 0%;    width: 100%;    height: 100%;    background-color: black;    z-index:1001;    -moz-opacity: 0.8;    opacity:.80;    filter: alpha(opacity=88);    margin-left: 203px;}
+.white_content {    display: none;    position: absolute;    top: 7%;    left: 35%;    width: 30%;    height: 80%;    padding: 20px;    border: 10px solid orange;    background-color: white;    z-index:1002;    overflow: auto;}
 /*弹出窗结束*/

@@ -2,8 +2,8 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="pers.hzh.gss.dao.OverLayDao">
-    <resultMap id="ResultMap" type="pers.hzh.gss.model.OverLay" >
+<mapper namespace="pers.hzh.gss.dao.MarkerDao">
+    <resultMap id="ResultMap" type="pers.hzh.gss.model.Marker" >
         <id column="id" property="id" jdbcType="INTEGER" />
         <result column="title" property="title" jdbcType="VARCHAR" />
         <result column="note" property="note" jdbcType="VARCHAR" />
@@ -14,29 +14,29 @@
         select
         note,level
         from
-        overlay
+        marker
         where
         title=#{title}
     </select>
-    <select id="selectAllOverLay" resultMap="ResultMap">
+    <select id="selectAllMarker" resultMap="ResultMap">
         select
         id,title,note,point,type
         from
-        overlay
+        marker
     </select>
-    <insert id="insertOverLay">
-        insert into overlay
+    <insert id="insertMarker">
+        insert into marker
         (title,note,point,type,level)
         values
         (#{title},#{note},#{point},#{type},#{level})
     </insert>
-    <delete id="deleteOverLayByTitle">
-        delete from overlay
+    <delete id="deleteMarkerByTitle">
+        delete from marker
         where
         title=#{title}
     </delete>
     <update id="updataNoteByTitle">
-        update overlay
+        update marker
         set
         note=#{note},level=#{level}
         where
