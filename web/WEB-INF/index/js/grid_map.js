@@ -1,9 +1,9 @@
 var map = new BMap.Map("allmap");
 // 创建地图实例
-var point = new BMap.Point(116.404, 39.915);
+//var point = new BMap.Point(116.404, 39.915);
 // 创建点坐标
 //map.centerAndZoom(point, 15);
-map.centerAndZoom("哈尔滨", 19);
+map.centerAndZoom("哈尔滨", 16);
 
 // 初始化地图，设置中心点坐标和地图级别
 map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
@@ -17,11 +17,6 @@ map.addControl(new BMap.OverviewMapControl(p));//小地图
 //map.addControl(new BMap.MapTypeControl());//地图类型
 map.setCurrentCity("哈尔滨"); // 仅当设置城市信息时，MapTypeControl的切换功能才能可用
 add_all_marker();
-var marker = new BMap.Marker(point);        // 创建标注
-map.addOverlay(marker);                     // 将标注添加到地图中
-marker.addEventListener("click", function(){
-    alert("您点击了标注");
-});
 ///////////////////////////////////////////////////////////////////////////////
 var addMarkerEvent=0;//////////////////////////////////////////标记按钮点击状态
 function switchAddMarker_() {////////////////////////////////切换标记按钮点击状态

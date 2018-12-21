@@ -1,9 +1,9 @@
 var map = new BMap.Map("allmap");
 // 创建地图实例
-var point = new BMap.Point(116.404, 39.915);
+//var point = new BMap.Point(116.404, 39.915);
 // 创建点坐标
 //map.centerAndZoom(point, 15);
-map.centerAndZoom("哈尔滨", 19);
+map.centerAndZoom("哈尔滨", 16);
 
 // 初始化地图，设置中心点坐标和地图级别
 map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
@@ -17,11 +17,6 @@ map.addControl(new BMap.OverviewMapControl(p));//小地图
 //map.addControl(new BMap.MapTypeControl());//地图类型
 map.setCurrentCity("哈尔滨"); // 仅当设置城市信息时，MapTypeControl的切换功能才能可用
 add_all_marker();
-var marker = new BMap.Marker(point);        // 创建标注
-map.addOverlay(marker);                     // 将标注添加到地图中
-marker.addEventListener("click", function(){
-    alert("您点击了标注");
-});
 ///////////////////////////////////////////////////////////////////////////////
 var addMarkerEvent=0;//////////////////////////////////////////标记按钮点击状态
 function switchAddMarker_() {////////////////////////////////切换标记按钮点击状态
@@ -246,6 +241,7 @@ function del(n)
 }
 function add_marker_to_li(title)///////////////////////////////////////////////添加到列表
 {
+
     $("#Marker_List").append("<li id='li"+title+"' class='sidebar_li_2_1' onclick='goto_marker_by_title("+title+")'><a id='a"+title+"' class='sidebar_a_2_1'>&nbsp;<div id='show_title"+title+"'class='show_title'>"+title+"</div><div id='del_marker_btn"+title+"'class='del_marker_btn'onclick='delete_marker_by_title("+title+")'>删除</div></a><div id='del_marker'></div></li>");
     $("#li"+title).attr("class",'sidebar_li_2_1');
     $("#a"+title).attr("class",'sidebar_a_2_1');
