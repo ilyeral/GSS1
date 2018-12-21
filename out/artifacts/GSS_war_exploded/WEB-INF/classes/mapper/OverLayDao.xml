@@ -10,9 +10,9 @@
         <result column="point" property="point" jdbcType="VARCHAR" />
         <result column="type" property="type" jdbcType="VARCHAR" />
     </resultMap>
-    <select id="selectNoteByTitle" resultType="String">
+    <select id="selectNoteByTitle" resultMap="ResultMap">
         select
-        note
+        note,level
         from
         overlay
         where
@@ -26,9 +26,9 @@
     </select>
     <insert id="insertOverLay">
         insert into overlay
-        (title,note,point,type)
+        (title,note,point,type,level)
         values
-        (#{title},#{note},#{point},#{type})
+        (#{title},#{note},#{point},#{type},#{level})
     </insert>
     <delete id="deleteOverLayByTitle">
         delete from overlay
@@ -38,7 +38,7 @@
     <update id="updataNoteByTitle">
         update overlay
         set
-        note=#{note}
+        note=#{note},level=#{level}
         where
         title=#{title}
     </update>

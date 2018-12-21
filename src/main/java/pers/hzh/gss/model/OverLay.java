@@ -6,6 +6,7 @@ public class OverLay {
     private String note;
     private String point;
     private String type;
+    private String level;
 
     public OverLay(){}
     public int getId() {
@@ -46,5 +47,13 @@ public class OverLay {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getLevel() {
+        return level;
+    }
+
+    public void setLevel(String level) {
+        this.level = level;
     }
 }

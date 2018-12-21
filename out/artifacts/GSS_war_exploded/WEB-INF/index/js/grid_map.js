@@ -47,8 +47,7 @@ var event_a= function(e) {                                  ////////添加标注
     map.addOverlay(marker);               // 将标注添加到地图中
     marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
 
-    var sContent =
-        "<div style='margin-top:10px; height: 500px;width: 300px;border:1px solid rgba(123, 123, 123, 0.7);background-color: rgba(123, 123, 123, 0.7); '><form  id='overlay' method='post' onsubmit='return false' action='##'><input  type='text'     name='point' id='point' style='display:none' /><input  type='text'     name='type' id='type' style='display:none' /><h3 style='color: aliceblue;margin-left:25px '>添加新标记点</h3> <div style='width:300px; margin:15px auto; text-align: center'> <textarea id='title' name='title' placeholder='标记点名称'   from='overlay'  style='width:250px; height:20px;padding:10px 10px; border:1px #999999 solid; font-size:16px; color:#fff; background-color:rgba(31,27,24,0.7);OVERFLOW:   hidden;'></textarea> </div> <div style='width:300px; margin:15px auto; text-align: center'> <textarea name='note' placeholder='备注信息'  cols='40'   from='overlay' style='width:250px; height:250px;padding:0px 10px; border:1px #999999 solid; font-size:14px; color:#fff; background-color:rgba(31,27,24,0.7);OVERFLOW:   hidden;'></textarea> </div> <div style='float: left;margin: 20px 20px 20px 140px;width: 40px;height: 25px;'> <input type='button' onclick='addmarker_()' from='overlay' style='background:#078be4; color:#FFF; font-size:14px; font-family:Microsoft YaHei;' value='添&nbsp;&nbsp;&nbsp;&nbsp;加'/> </div> <div style='float: left;margin: 20px 20px 20px 20px;width: 40px;height: 25px;'> <input type='button' onclick='disaddmarker_()'  style='background:#C2D8E4; color:#FFF; font-size:14px; font-family:Microsoft YaHei;' value='取&nbsp;&nbsp;&nbsp;&nbsp;消'/> </div> </form></div>";
+    var sContent =get_window_1();
     var infoWindow = new BMap.InfoWindow(sContent);  // 创建信息窗口对象
     marker.openInfoWindow(infoWindow);
 }
@@ -126,7 +125,7 @@ function addMarkerListener(marker){///////////////////////////////////添加事�
 }
 var marker_click= function(e){///////////////////////////////////////事件-marker点击
     var marker=this;
-    var note;
+    marker_2_title=this.getTitle();
     var msg={"title":this.getTitle()};
     console.log("title:"+this.getTitle());//打印服务端返回的数据(调试用)
     $.ajax({
@@ -138,11 +137,12 @@ var marker_click= function(e){///////////////////////////////////////事件-mark
         async:true,
         success: function (result) {
             console.log(result);//打印服务端返回的数据(调试用)
-            note=result;
-            var sContent =
-                "<div style='margin-top:10px;height: 500px;width: 300px;border:1px solid rgba(223,223,223,0.7);background-color: rgba(206,206,206,0.7); '>    <h3 style='color: #9b9b9b;margin-left:25px '>标记点信息</h3>    <form  id='overlay' method='post' onsubmit='return false' action='##'>        <div style='width:300px; margin:15px auto; text-align: center'>            <input class='listinp' type='text'     name='point' id='point' style='display:none' />            <textarea name='title' id='title'   disabled  style='width:250px; height:20px;padding:10px 10px; border:1px #999999 solid; font-size:16px; color:#fff; background-color:rgba(31,27,24,0.7);OVERFLOW:   hidden;'>"+marker.getTitle()+"</textarea>        </div>        <div style='width:300px; margin:15px auto; text-align: center'>            <textarea name='note'  id='note' cols='40'  disabled style='width:250px; height:250px;padding:0px 10px; border:1px #999999 solid; font-size:14px; color:#fff; background-color:rgba(31,27,24,0.7);OVERFLOW:   hidden;'>"+note+"</textarea>        </div>        <div id='sub' style='float: left;margin: 10px 20px 10px 140px;width: 40px;height: 25px;display:none'>            <input type='button' onclick='update_note()' class='btn' value='提&nbsp;&nbsp;&nbsp;&nbsp;交'/>        </div>        <div id='canl' style='float: left;margin: 10px 20px 10px 20px;width: 40px;height: 25px;display:none'>            <input type='button' onclick='close_InfoWindow()' class='btn' value='取&nbsp;&nbsp;&nbsp;&nbsp;消'/>        </div>        <div id='change' style='float: left;margin: 10px 20px 10px 20px;width: 40px;height: 25px;'>            <input type='button' onclick='updata_InfoWindow()' class='btn' value='修&nbsp;&nbsp;&nbsp;&nbsp;改'/>        </div>    </form></div>";
+            var arr=result.split("#");
+            note_2=arr[0];
+            var sContent =get_window_2();
             var infoWindow = new BMap.InfoWindow(sContent);  // 创建信息窗口对象
             marker.openInfoWindow(infoWindow);
+            $("#level").val(arr[1]);
             temp_marker=marker;
         },
         error : function(e) {
@@ -155,6 +155,7 @@ function updata_InfoWindow(){//////////////////////////////////////修改窗口�
     $("#sub").show();
     $("#canl").show();
     $("#note").removeAttr("disabled");
+    $("#level").removeAttr("disabled");
 }
 var temp_marker;//////////////////////////////////////////////////当前打开窗口的宿主
 function close_InfoWindow(){///////////////////////////////////////关闭窗口
@@ -163,7 +164,8 @@ function close_InfoWindow(){///////////////////////////////////////关闭窗口
 function update_note(){////////////////////////////////////////////修改note
     var title=document.getElementById('title').value;
     var note=document.getElementById('note').value;
-    var msg={"title":title,"note":note};
+    var level=document.getElementById('level').value;
+    var msg={"title":title,"note":note,"level":level};
 
     $.ajax({
         //几个参数需要注意一下
@@ -194,6 +196,7 @@ $(document).ready(function(){                             //////树形菜单控�
     $(".sidebar_a_1").click(function(){
         $(".sidebar_ul_2").hide();
         $(this).next().show();
+        $(".del_overlay_btn").hide();
     });
 });
 ///////////////////////////////////////////////////////////////////////////////
@@ -355,10 +358,18 @@ function close_drawingManager() {
     $('.BMapLib_Drawing_panel').hide();
     drawingManager_is_switch=0;
 }
-function clearAll() {
-    console.log(overlays.length);//打印服务端返回的数据(调试用)
+function add_polygon(){
+    var x;
+    var person=prompt("请输入你的名字","Harry Potter");
 }
-
+function openDialog(){///////////////////////////////////////////////////////////打开悬浮窗
+    document.getElementById('light').style.display='block';
+    document.getElementById('fade').style.display='block'
+}
+function closeDialog(){///////////////////////////////////////////////////////////关闭悬浮窗
+    document.getElementById('light').style.display='none';
+    document.getElementById('fade').style.display='none'
+}
 
 
 

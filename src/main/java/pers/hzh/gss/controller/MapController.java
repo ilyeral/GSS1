@@ -35,9 +35,9 @@ public class MapController {
     @ResponseBody
     public String getNote(String title){
         logger.info("POST getNote :"+title);
-        String result=overLayService.getNote(title);
-        logger.info("RETURN "+result);
-        return result+"";
+        OverLay result=overLayService.getNote(title);
+        logger.info("RETURN "+result.getNote()+"#"+result.getLevel());
+        return result.getNote()+"#"+result.getLevel();
     }
     @RequestMapping(value = "/getAllOverLay",method = RequestMethod.GET,produces = "application/json;charset=UTF-8")
     @ResponseBody
@@ -48,9 +48,9 @@ public class MapController {
     }
     @RequestMapping(value = "/updataNote",method = RequestMethod.POST,produces = "application/text;charset=UTF-8")
     @ResponseBody
-    public String updataNote(String title,String note){
+    public String updataNote(String title,String note,String level){
         logger.info("GET getAllOverLay");
-        int result=overLayService.updataNote(title,note);
+        int result=overLayService.updataNote(title,note,level);
         return result+"";
     }
     @RequestMapping(value = "/deleteOverLay",method = RequestMethod.POST,produces = "application/text;charset=UTF-8")

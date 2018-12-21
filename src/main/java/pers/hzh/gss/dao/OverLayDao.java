@@ -8,9 +8,9 @@ import java.util.List;
 
 @MapperScan
 public interface OverLayDao {
-    int insertOverLay(@Param("title") String title, @Param("note") String note,@Param("point")String point,@Param("type")String type);
-    String selectNoteByTitle(@Param("title")String title);
+    int insertOverLay(@Param("title") String title, @Param("note") String note,@Param("point")String point,@Param("type")String type,@Param("level")String level);
+    OverLay selectNoteByTitle(@Param("title")String title);
     List<OverLay> selectAllOverLay();
-    int updataNoteByTitle(@Param("title")String title,@Param("note")String note);
+    int updataNoteByTitle(@Param("title")String title,@Param("note")String note,@Param("level")String level);
     int deleteOverLayByTitle(@Param("title")String title);
 }

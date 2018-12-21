@@ -1,13 +1,13 @@
 /*侧导航栏*/
-div.sidebar1{height: 90%;margin:0 0 50px}
-div.sidebar2{height: 50px}
+div.sidebar1{height: auto;}
+div.sidebar2{height: 50px; margin-left: 1px}
 /**/ul.sidebar_bot {  list-style-type: none;  margin: 0 0 0 0;  padding: 0 0 0 0;  width: 202px;  background-color: #f1f1f1;  position: fixed;  height: 100%;  overflow: auto;}
 
-ul.sidebar_ul_1 {  list-style-type: none;  margin: 0 0 0 0;  padding: 0 0 0 0;  width: 202px;  background-color: #f1f1f1;  height: 100%;  overflow: auto;}/* position: fixed; */
-li.sidebar_li_1{text-align: center;background-color: #444444}
+ul.sidebar_ul_1 {  list-style-type: none;  margin: 0 0 0 0;  padding: 0 0 0 0;  width: 219px;  background-color: #f1f1f1;  height: 100%;  overflow: auto;}/* position: fixed; */
+li.sidebar_li_1{text-align: center;background-color: #444444;width: 202px}
 a.sidebar_a_1 {  display: block;  color: #f1f1f1;  padding: 8px 16px;  text-decoration: none;cursor:pointer;}
 
-ul.sidebar_ul_2 {  list-style-type: none;  margin: 0;  padding: 5px 10px 5px 10px;  overflow: hidden;  background-color: #f1f1f1;  /*position: fixed*/;  width: 180px;border:1px solid rgba(143, 143, 143, 0.7);}
+ul.sidebar_ul_2 {  display:none; list-style-type: none;  margin: 0;  padding: 5px 10px 5px 10px;  overflow: hidden;  background-color: #f1f1f1;  /*position: fixed*/;  width: 180px;border:1px solid rgba(143, 143, 143, 0.7);}
 li.sidebar_li_2{float: left;width:50px ;height: 50px; margin: 2px 2px 2px 2px;padding: 2px 2px 2px 2px;text-align: center;background-color:#8F8F8F; border-radius: 8px;border:1px solid rgba(123, 123, 123, 0.7);cursor:pointer; }
 li.sidebar_li_2_1{ margin: 1px 2px 0px 2px;padding: 2px 2px 2px 2px;text-align: center;background-color:#8F8F8F; border-radius: 8px;border:1px solid rgba(123, 123, 123, 0.7);cursor:pointer; }
 img.sidebar_img_2{height: 30px;width: 30px;margin:0px 0px 0px 0px;}
@@ -18,3 +18,7 @@ a.sidebar_a_2_1 { position:relative; display: block;  color: #f1f1f1;  text-deco
 .tools{float: left;width: 48px;height: 48px;border:1px solid #bbb;text-align:center;}
 .bar_bar_img{height: 30px;width: 30px;margin:5px 5px 5px 5px;}
 /*侧导航栏结束*/
+/*弹出窗*/
+.black_overlay{    display: none;    position: absolute;    top: 0%;    left: 0%;    width: 100%;    height: 100%;    background-color: black;    z-index:1001;    -moz-opacity: 0.8;    opacity:.80;    filter: alpha(opacity=88);    margin-left: 210px;}
+.white_content {    display: none;    position: absolute;    top: 25%;    left: 25%;    width: 55%;    height: 55%;    padding: 20px;    border: 10px solid orange;    background-color: white;    z-index:1002;    overflow: auto;}
+/*弹出窗结束*/

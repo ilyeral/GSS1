@@ -12,16 +12,16 @@ public class OverLayService {
     @Autowired
     OverLayDao overLayDao;
     public int addOverLay(OverLay overLay){
-        return overLayDao.insertOverLay(overLay.getTitle(),overLay.getNote(),overLay.getPoint(),overLay.getType());
+        return overLayDao.insertOverLay(overLay.getTitle(),overLay.getNote(),overLay.getPoint(),overLay.getType(),overLay.getLevel());
     }
-    public String getNote(String title){
+    public OverLay getNote(String title){
         return overLayDao.selectNoteByTitle(title);
     }
     public List<OverLay> getAllOverLay(){
         return overLayDao.selectAllOverLay();
     }
-    public int updataNote(String title,String note){
-        return overLayDao.updataNoteByTitle(title,note);
+    public int updataNote(String title,String note,String level){
+        return overLayDao.updataNoteByTitle(title,note,level);
     }
     public int deleteOverLayByTitle(String title){
         return overLayDao.deleteOverLayByTitle(title);

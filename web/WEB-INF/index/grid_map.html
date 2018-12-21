@@ -72,14 +72,39 @@
         </ul>
     </div>
 </div>
-<div id ="grid_map_div2"style="margin-left:210px;padding:0px 0px;height: 100%;  max-height:100%;">
+<div id ="grid_map_div2"style="margin-left:203px;padding:0px 0px;height: 100%;  max-height:100%;">
+    <!--地图-->
     <div id="allmap" style="border-style: none; margin: 0px;width:100%;height: 100%;  max-height:100%;"></div>
+    <!--悬浮窗-->
+    <div id="light" class="white_content">
+        <form  id='overlay' method='post' onsubmit='return false' action='##'>
+            <div style='width:300px; margin:15px auto; text-align: center'>
+                <input class='listinp' type='text'     name='point' id='point1' />
+            </div>
+            <div style='width:300px; margin:15px auto; text-align: center'>
+                <input class='listinp' type='text'     name='point' id='point2'  />
+            </div>
+            <div style='width:300px; margin:15px auto; text-align: center'>
+                <input class='listinp' type='text'     name='point' id='point3'  />
+            </div>
+            <div style='width:300px; margin:15px auto; text-align: center'>
+                <input class='listinp' type='text'     name='point' id='point4' />
+            </div>
+            <div id='sub' style='float: left;margin: 10px 20px 10px 140px;width: 40px;height: 25px;'>
+                <input type='button' onclick='login()' class='btn' value='提&nbsp;&nbsp;&nbsp;&nbsp;交'/>
+            </div>
+            <div id='canl' style='float: left;margin: 10px 20px 10px 20px;width: 40px;height: 25px;'>
+                <input type='button' onclick='login()' class='btn' value='取&nbsp;&nbsp;&nbsp;&nbsp;消'/>
+            </div>
+        </form>
+    </div>
+    <div id="fade" class="black_overlay"></div>
 </div>
 <script type="text/javascript"charset="utf-8">
     var height=document.getElementById("grid_map_div2").offsetHeight;
-    document.getElementById("grid_map_div1").style.height= height-98 +"px";
+    document.getElementById("grid_map_div1").style.height= height-48 +"px";
 </script>
-
 </body>
 </html>
 <script type="text/javascript" src="js/grid_map.js" charset="utf-8"></script>
+<script type="text/javascript" src="js/grid_map_ht.js" charset="utf-8"></script>

@@ -1162,17 +1162,23 @@
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <index id="290" parent="281" name="overlay_title_uindex">
+    <column id="290" parent="281" name="level">
+      <Position>6</Position>
+      <DataType>varchar(1)|0s</DataType>
+      <NotNull>1</NotNull>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <index id="291" parent="281" name="overlay_title_uindex">
       <ColNames>title</ColNames>
       <Unique>1</Unique>
       <Type>btree</Type>
     </index>
-    <key id="291" parent="281" name="PRIMARY">
+    <key id="292" parent="281" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <key id="292" parent="281" name="overlay_title_uindex">
+    <key id="293" parent="281" name="overlay_title_uindex">
       <ColNames>title</ColNames>
       <UnderlyingIndexName>overlay_title_uindex</UnderlyingIndexName>
     </key>
