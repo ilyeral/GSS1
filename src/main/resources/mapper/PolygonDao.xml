@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pers.hzh.gss.dao.PolygonDao">
+    <resultMap id="ResultMap" type="pers.hzh.gss.model.Polygon" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="note" property="note" jdbcType="VARCHAR" />
+        <result column="point" property="point" jdbcType="VARCHAR" />
+        <result column="parent" property="parent" jdbcType="INTEGER" />
+        <result column="maker" property="maker" jdbcType="VARCHAR" />
+        <result column="manager" property="manager" jdbcType="VARCHAR" />
+        <result column="date" property="date" jdbcType="DATE" />
+    </resultMap>
+    <select id="selectPolygonByName" resultMap="ResultMap">
+        select
+        id,name,note,point,parent,maker,manager,date
+        from
+        polygon
+        where
+        name=#{name}
+    </select>
+    <select id="selectAllPolygon" resultMap="ResultMap">
+        select
+        id,name,note,point,parent,maker,manager,date
+        from
+        polygon
+    </select>
+    <insert id="insertPolygon">
+        insert into polygon
+        (name,note,point,parent,maker,manager)
+        values
+        (#{name},#{note},#{point},#{parent},#{maker},#{manager})
+    </insert>
+    <!--<delete id="deleteMarkerByTitle">-->
+        <!--delete from marker-->
+        <!--where-->
+        <!--title=#{title}-->
+    <!--</delete>-->
+    <!--<update id="updataNoteByTitle">-->
+        <!--update marker-->
+        <!--set-->
+        <!--note=#{note},level=#{level}-->
+        <!--where-->
+        <!--title=#{title}-->
+    <!--</update>-->
+</mapper>

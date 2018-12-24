@@ -72,25 +72,27 @@ function addmarker_(){/////////////////////////////////////////////添加marker
         }
     }
     title=document.getElementById('title').value;
-    document.getElementById('point').value=point.lng+','+point.lat+'#';
+    document.getElementById('point').value=point.lng+','+point.lat;
     document.getElementById('type').value='marker';
     console.log($('#marker_form').serialize());//打印服务端返回的数据(调试用)
-    console.log(point.lng+','+point.lat+'#');//打印服务端返回的数据(调试用)
+    console.log(title);//打印服务端返回的数据(调试用)
+    console.log(point.lng+','+point.lat);//打印服务端返回的数据(调试用)
     $.ajax({
         //几个参数需要注意一下
         type: "POST",//方法类型
         dataType: "text",//预期服务器返回的数据类型
         url: getRootPath()+"/index/addMarker" ,//url
         data: $('#marker_form').serialize(),
-        contentType : "application/x-www-form-urlencoded",
+        contentType : "application/x-www-form-urlencoded;charset=utf-8",
         success: function (result) {
             console.log(result);//打印服务端返回的数据(调试用)
-            if (result=="1") {
+            if (result!="0") {
                 marker.setTitle(title);
+                marker.id=result;
                 marker.closeInfoWindow();
                 removeEventListener_();
                 addMarkerListener(marker);
-                add_marker_to_li(title);
+                add_marker_to_li(result,title);
             }else if(result=="0"){
                 removeEventListener_();
                 alert("添加失败，请检查名称是否重复");
@@ -120,8 +122,8 @@ function addMarkerListener(marker){///////////////////////////////////添加事�
 var marker_click= function(e){///////////////////////////////////////事件-marker点击
     var marker=this;
     marker_2_title=this.getTitle();
-    var msg={"title":this.getTitle()};
-    console.log("title:"+this.getTitle());//打印服务端返回的数据(调试用)
+    var msg={"id":this.id};
+    console.log("id:"+this.id);//打印服务端返回的数据(调试用)
     $.ajax({
         //几个参数需要注意一下
         type: "POST",//方法类型
@@ -132,11 +134,12 @@ var marker_click= function(e){///////////////////////////////////////事件-mark
         success: function (result) {
             console.log(result);//打印服务端返回的数据(调试用)
             var arr=result.split("#");
-            note_2=arr[0];
+            marker_2_title=arr[0];
+            note_2=arr[1];
             var sContent =get_window_2();
             var infoWindow = new BMap.InfoWindow(sContent);  // 创建信息窗口对象
             marker.openInfoWindow(infoWindow);
-            $("#level").val(arr[1]);
+            $("#level").val(arr[2]);
             temp_marker=marker;
         },
         error : function(e) {
@@ -147,7 +150,8 @@ var marker_click= function(e){///////////////////////////////////////事件-mark
 function updata_InfoWindow(){//////////////////////////////////////修改窗口状态为可编辑
     $("#change").hide();
     $("#sub").show();
-    $("#canl").show();
+    $("#cancel").show();
+    $("#title").removeAttr("disabled");
     $("#note").removeAttr("disabled");
     $("#level").removeAttr("disabled");
 }
@@ -159,7 +163,8 @@ function update_note(){////////////////////////////////////////////修改note
     var title=document.getElementById('title').value;
     var note=document.getElementById('note').value;
     var level=document.getElementById('level').value;
-    var msg={"title":title,"note":note,"level":level};
+    var id=temp_marker.id;
+    var msg={"id":id,"title":title,"note":note,"level":level};
 
     $.ajax({
         //几个参数需要注意一下
@@ -217,17 +222,18 @@ function add_all_marker(){///////////////////////////////////////////向地图�
 function add_marker_by_item(item) {//////////////////////////////////添加标记物
     console.log("add_marker_by_item");
     add_marker_to_map(item)
-    add_marker_to_li(item.title);
+    add_marker_to_li(item.id,item.title);
 }
 function add_marker_to_map(item) {///////////////////////////添加标记物-marker
     console.log("add_marker_to_map");
-    var arr=item.point.split("#");
-    var point_x=parseFloat(arr[0].split(",")[0]);
-    var point_y=parseFloat(arr[0].split(",")[1]);
+    var arr=item.point;
+    var point_x=parseFloat(arr.split(",")[0]);
+    var point_y=parseFloat(arr.split(",")[1]);
     var point = new BMap.Point(point_x, point_y);
     console.log(point.lng+" "+point.lat);
     var marker = new BMap.Marker(point);  // 创建标注
     marker.setTitle(item.title);
+    marker.id=item.id;
     map.addOverlay(marker);               // 将标注添加到地图中
     marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
     addMarkerListener(marker);
@@ -239,30 +245,30 @@ function del(n)
     var t=s.childNodes.length;
     s.removeChild(s.childNodes[n-1]);
 }
-function add_marker_to_li(title)///////////////////////////////////////////////添加到列表
+function add_marker_to_li(id,title)///////////////////////////////////////////////添加到列表
 {
 
-    $("#Marker_List").append("<li id='li"+title+"' class='sidebar_li_2_1' onclick='goto_marker_by_title("+title+")'><a id='a"+title+"' class='sidebar_a_2_1'>&nbsp;<div id='show_title"+title+"'class='show_title'>"+title+"</div><div id='del_marker_btn"+title+"'class='del_marker_btn'onclick='delete_marker_by_title("+title+")'>删除</div></a><div id='del_marker'></div></li>");
-    $("#li"+title).attr("class",'sidebar_li_2_1');
-    $("#a"+title).attr("class",'sidebar_a_2_1');
-    $("#show_title"+title).attr("class",'show_title');
-    $("#del_marker_btn"+title).attr("class",'del_marker_btn');
+    $("#Marker_List").append("<li id='li"+id+"' class='sidebar_li_2_1' onclick='goto_marker_by_id("+id+")'><a id='a"+id+"' class='sidebar_a_2_1'>&nbsp;<div id='show_title"+id+"'class='show_title'>"+title+"</div><div id='del_marker_btn"+id+"'class='del_marker_btn'onclick='delete_marker_by_id("+id+")'>删除</div></a><div id='del_marker'></div></li>");
+    $("#li"+id).attr("class",'sidebar_li_2_1');
+    $("#a"+id).attr("class",'sidebar_a_2_1');
+    $("#show_title"+id).attr("class",'show_title');
+    $("#del_marker_btn"+id).attr("class",'del_marker_btn');
 }
-function goto_marker_by_title(title) {////////////////////////////////////定位到覆盖物
+function goto_marker_by_id(id) {////////////////////////////////////定位到marker
     var allOverlay = map.getOverlays();
     for (var i = 0; i < allOverlay.length; i++) {
         if (allOverlay[i].toString() == '[object Marker]') {
-            if (allOverlay[i].getTitle() == title) {
+            if (allOverlay[i].id == id) {
                 map.panTo(allOverlay[i].point);
                 //map.setZoom(15);
             }
         }
     }
     $(".del_marker_btn").hide();
-    $("#del_marker_btn"+title).show();
+    $("#del_marker_btn"+id).show();
 }
-function delete_marker_by_title(title) {////////////////////////////////////////删除覆盖物
-    var msg={"title":title};
+function delete_marker_by_id(id) {////////////////////////////////////////删除marker
+    var msg={"id":id};
 
     $.ajax({
         //几个参数需要注意一下
@@ -274,11 +280,11 @@ function delete_marker_by_title(title) {////////////////////////////////////////
         success: function (result) {
             console.log(result);//打印服务端返回的数据(调试用)
             if(result==1){
-                $("#li"+title).hide();
+                $("#li"+id).hide();
                 var allOverlay = map.getOverlays();
                 for (var i = 0; i < allOverlay.length; i++) {
                     if (allOverlay[i].toString() == '[object Marker]') {
-                        if (allOverlay[i].getTitle() == title) {
+                        if (allOverlay[i].id == id) {
                             map.removeOverlay(allOverlay[i]);
                         }
                     }
@@ -297,15 +303,15 @@ function delete_marker_by_title(title) {////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////添加覆盖物
 var drawingManager;
 var drawingManager_is_switch=0;
-var overlays = [];
-function drawingManager_switch(){
+function drawingManager_switch(){/////////////////////////////////////////////////开关鼠标绘图
     if(drawingManager_is_switch==0){
         open_drawingManager()
     }else{
         close_drawingManager();
     }
 }
-function open_drawingManager(){
+var temp_polygon;
+function open_drawingManager(){////////////////////////////////////////////////////打开鼠标绘图
     var styleOptions = {
         strokeColor:"#068791",    //边线颜色。
         fillColor:"#851815",      //填充颜色。当参数为空时，圆形将没有填充效果。
@@ -335,24 +341,22 @@ function open_drawingManager(){
         drawingManager_is_switch=1;
     }
     var overlaycomplete = function(e){
-        var polygon=e.overlay;
-        polygon.id="新建";
-        overlays.push(e.overlay);
+        temp_polygon=e.overlay;
+        temp_polygon.name="新建";
         console.log("over_drow");//打印服务端返回的数据(调试用)
-        console.log(polygon);//打印服务端返回的数据(调试用)
+        console.log(temp_polygon);//打印服务端返回的数据(调试用)
+        openDialog();
     };
     drawingManager.addEventListener('overlaycomplete', overlaycomplete);
     document.getElementById('add_overlay').style.background="#404040";
 }
-function close_drawingManager() {
+function close_drawingManager() {////////////////////////////////////////////////关闭鼠标绘图
     drawingManager.close();
     document.getElementById('add_overlay').style.background="#8F8F8F";
     $('.BMapLib_Drawing_panel').hide();
     drawingManager_is_switch=0;
-}
-function add_polygon(){
-    var x;
-    var person=prompt("请输入你的名字","Harry Potter");
+    closeDialog();
+    delete_temp_overlay();
 }
 function openDialog(){///////////////////////////////////////////////////////////打开悬浮窗
     document.getElementById('light').style.display='block';
@@ -360,11 +364,95 @@ function openDialog(){//////////////////////////////////////////////////////////
 }
 function closeDialog(){///////////////////////////////////////////////////////////关闭悬浮窗
     document.getElementById('light').style.display='none';
-    document.getElementById('fade').style.display='none'
+    document.getElementById('fade').style.display='none';
 }
+function delete_temp_overlay() {//////////////////////////////////////////////////删除未保存覆盖物
+    map.removeOverlay(temp_polygon);
+}
+function submit_overlay_form() {
+    var name=document.getElementById('name').value;
+    temp_polygon.name=name;
+    var point=temp_polygon.getPath();
+    var point_list="";
+    for (var i = 0; i < point.length; i++) {
+        point_list+=point[i].lng+","+point[i].lat+"#";
+    }
+    var note=document.getElementById('note').value;
+    var manager=document.getElementById('manager').value;
+    var msg={"name":name,"note":note,"point":point_list,"manager":manager};
+    // console.log("point="+point[0]);//打印服务端返回的数据(调试用)
+    $.ajax({
+        //几个参数需要注意一下
+        type: "POST",//方法类型
+        dataType: "text",//预期服务器返回的数据类型
+        url: getRootPath()+"/index/addPolygon" ,//url
+        data: msg,
+        async:true,
+        success: function (result) {
+            console.log(result);//打印服务端返回的数据(调试用)
+            if(result==1){
+                closeDialog();
+                delete_temp_overlay();
+                add_polygon_by_name(name);
+            }else{
 
+            }
+        },
+        error : function(e) {
+            return false;
+        }
+    });
+}
+function cancel_overlay_form() {/////////////////////////////////polygon添加信息页面的取消按钮
+    closeDialog();
+    delete_temp_overlay();
+}
+function add_polygon_by_name(name) {
+    var msg={"name":name};
+    $.ajax({
+        //几个参数需要注意一下
+        type: "POST",//方法类型
+        dataType: "json",//预期服务器返回的数据类型
+        url: getRootPath()+"/index/getPolygonByName" ,//url
+        data: msg,
+        async:true,
+        success: function (result) {
+            console.log(result);//打印服务端返回的数据(调试用)
+            add_polygon(result);
+        },
+        error : function(e) {
+            return false;
+        }
+    });
+}
+function add_polygon(result) {
 
+    var id=result.id;
+    var name=result.name;
+    var note=result.note;
+    var maker=result.maker;
+    var date=result.date;
+    var manager=result.manager;
+    var parent=result.parent;
+    var point=result.point;
+    var arr=point.split("#");
+    var point_list=[];
+    for (var i = 0; i < arr.length-1; i++) {
+        var point_x=parseFloat(arr[i].split(",")[0]);
+        var point_y=parseFloat(arr[i].split(",")[1]);
+        var point_i=new BMap.Point(point_x,point_y);
+        point_list.push(point_i);
+    }
+    console.log(point_list);//打印服务端返回的数据(调试用)
 
+    var polygon = new BMap.Polygon(point_list, {strokeColor: "red",fillColor: "#F1F1F1",strokeWeight: 1,strokeOpacity: 1,fillOpacity: 0.5});  //创建多边形
+    console.log(polygon);//打印服务端返回的数据(调试用)
+    polygon.id=id;
+    polygon.name=name;
+    map.addOverlay(polygon);           //增加多边形
+
+    console.log("add_polygon");//打印服务端返回的数据(调试用)
+}
 //开启、关闭滚轮缩放
 function enableScrollWheelZoom() {
     map.enableScrollWheelZoom(true);

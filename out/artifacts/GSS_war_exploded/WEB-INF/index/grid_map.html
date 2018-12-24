@@ -29,7 +29,7 @@
                 <ul class="sidebar_ul_2">
                     <li class="sidebar_li_2" id="add_marker" onclick="switchAddMarker_()"><img src="../image/logout.png" class="sidebar_img_2"><a class="sidebar_a_2">添加标记</a></li>
                     <li class="sidebar_li_2" id="add_overlay"onclick="drawingManager_switch()"><img src="../image/logout.png" class="sidebar_img_2"><a class="sidebar_a_2">添加区域</a></li>
-                    <li class="sidebar_li_2" onclick="clearAll()"><img src="../image/logout.png" class="sidebar_img_2"><a class="sidebar_a_2">主</a></li>
+                    <li class="sidebar_li_2" onclick="add_polygon_by_name('zx')"><img src="../image/logout.png" class="sidebar_img_2"><a class="sidebar_a_2">主</a></li>
                     <li class="sidebar_li_2" ><img src="../image/logout.png" class="sidebar_img_2"><a class="sidebar_a_2">主</a></li>
                     <li class="sidebar_li_2" ><img src="../image/logout.png" class="sidebar_img_2"><a class="sidebar_a_2">主</a></li>
                 </ul>
@@ -77,24 +77,25 @@
     <div id="allmap" style="border-style: none; margin: 0px;width:100%;height: 100%;  max-height:100%;"></div>
     <!--悬浮窗-->
     <div id="light" class="white_content">
+        <h3 style='color: #9b9b9b;margin-left:25px '>区域信息</h3>
         <form  id='overlay' method='post' onsubmit='return false' action='##'>
-            <div style='width:300px; margin:15px auto; text-align: center'>
-                <input class='listinp' type='text'     name='point' id='point1' />
+            <div class="polygon_input_div"style="width: 222px">
+                <input class='polygon_input'style="width: 200px" type='text' placeholder="区域名称"    name='name' id='name' />
             </div>
-            <div style='width:300px; margin:15px auto; text-align: center'>
-                <input class='listinp' type='text'     name='point' id='point2'  />
+            <div class="polygon_input_div"style="width: 115px;padding-left: 15px; background-color: rgba(18, 18, 18, 0.66);border-radius: 16px;">
+                <select class='polygon_input_select'style="width: 100px;text-align: center" name='manager' id='manager' >
+                    <option value='0'class="polygon_input_option">管理者</option>
+                    <option value='0'class="polygon_input_option">管理者</option>
+                </select>
             </div>
-            <div style='width:300px; margin:15px auto; text-align: center'>
-                <input class='listinp' type='text'     name='point' id='point3'  />
+            <div class="polygon_input_div"style="width: 370px;height: 280px">
+                <textarea class='polygon_input'style="width: 348px;height: 280px;padding:5px 10px 0 15px;" type='text' placeholder="备注信息"    name='note' id='note' ></textarea>
             </div>
-            <div style='width:300px; margin:15px auto; text-align: center'>
-                <input class='listinp' type='text'     name='point' id='point4' />
+            <div id='sub' style='float: left;margin: 15px 20px 10px 220px;width: 70px;height: 33px;'>
+                <button  onclick='submit_overlay_form()'  style="border-radius: 6px;background-color: #078be4;width: 70px;height: 33px;font-size:14px;">提&nbsp;&nbsp;&nbsp;&nbsp;交</button>
             </div>
-            <div id='sub' style='float: left;margin: 10px 20px 10px 140px;width: 40px;height: 25px;'>
-                <input type='button' onclick='login()' class='btn' value='提&nbsp;&nbsp;&nbsp;&nbsp;交'/>
-            </div>
-            <div id='canl' style='float: left;margin: 10px 20px 10px 20px;width: 40px;height: 25px;'>
-                <input type='button' onclick='login()' class='btn' value='取&nbsp;&nbsp;&nbsp;&nbsp;消'/>
+            <div id='cancel' style='float: left;margin: 15px 20px 10px 20px;width: 70px;height: 33px;'>
+                <button  onclick='cancel_overlay_form()'  style="border-radius: 6px;background-color: #cecece;width: 70px;height: 33px;font-size:14px;">取&nbsp;&nbsp;&nbsp;&nbsp;消</button>
             </div>
         </form>
     </div>

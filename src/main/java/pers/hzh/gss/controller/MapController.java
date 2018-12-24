@@ -8,8 +8,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import pers.hzh.gss.model.Marker;
+import pers.hzh.gss.model.Polygon;
 import pers.hzh.gss.service.MarkerService;
+import pers.hzh.gss.service.PolygonService;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -18,6 +21,10 @@ public class MapController {
     private static Logger logger = Logger.getLogger(MapController.class);
     @Autowired
     MarkerService markerService;
+    @Autowired
+    PolygonService polygonService;
+
+
 
     @RequestMapping(value = "/getMap",method = RequestMethod.GET)
     public String login(Model model){
@@ -29,15 +36,19 @@ public class MapController {
     public String addMarker(Marker marker){
         logger.info("POST addMarker");
         int result= markerService.addMarker(marker);
-        return result+"";
+        int id=0;
+        if(result==1){
+            id=markerService.selectTheNew().getId();
+        }
+        return id+"";
     }
     @RequestMapping(value = "/getNote",method = RequestMethod.POST,produces = "application/text;charset=UTF-8")
     @ResponseBody
-    public String getNote(String title){
-        logger.info("POST getNote :"+title);
-        Marker result= markerService.getNote(title);
-        logger.info("RETURN "+result.getNote()+"#"+result.getLevel());
-        return result.getNote()+"#"+result.getLevel();
+    public String getNote(String id){
+        logger.info("POST getNote :"+id);
+        Marker result= markerService.getMarkerById(id);
+        logger.info("RETURN "+result.getTitle()+"#"+result.getNote()+"#"+result.getLevel());
+        return result.getTitle()+"#"+result.getNote()+"#"+result.getLevel();
     }
     @RequestMapping(value = "/getAllMarker",method = RequestMethod.GET,produces = "application/json;charset=UTF-8")
     @ResponseBody
@@ -48,16 +59,30 @@ public class MapController {
     }
     @RequestMapping(value = "/updataNote",method = RequestMethod.POST,produces = "application/text;charset=UTF-8")
     @ResponseBody
-    public String updataNote(String title,String note,String level){
-        logger.info("GET updataNote");
-        int result= markerService.updataNote(title,note,level);
+    public String updataNote(int id,String title,String note,String level){
+        logger.info("POST updataNote");
+        int result= markerService.updataNote(id,title,note,level);
         return result+"";
     }
     @RequestMapping(value = "/deleteMarker",method = RequestMethod.POST,produces = "application/text;charset=UTF-8")
     @ResponseBody
-    public String deleteMarker(String title){
-        logger.info("GET getAllMarker");
-        int result= markerService.deleteMarkerByTitle(title);
+    public String deleteMarker(String id){
+        logger.info("POST deleteMarker");
+        int result= markerService.deleteMarkerById(id);
         return result+"";
+    }
+    @RequestMapping(value = "/addPolygon",method = RequestMethod.POST,produces = "application/text;charset=UTF-8")
+    @ResponseBody
+    public String addPolygon(Polygon polygon,HttpSession session){
+        logger.info("POST addPolygon");
+        int result=polygonService.addPolygon(polygon.getName(),polygon.getNote(),(String) session.getAttribute("manager_id"),polygon.getManager(),polygon.getParent(),polygon.getPoint());
+        return result+"";
+    }
+    @RequestMapping(value = "/getPolygonByName",method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public Polygon getPolygonByName(String  name){
+        logger.info("POST getPolygonByName");
+        Polygon result=polygonService.getPolygonByName(name);
+        return result;
     }
 }

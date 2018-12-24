@@ -14,16 +14,19 @@ public class MarkerService {
     public int addMarker(Marker marker){
         return markerDao.insertMarker(marker.getTitle(), marker.getNote(), marker.getPoint(), marker.getType(), marker.getLevel());
     }
-    public Marker getNote(String title){
-        return markerDao.selectNoteByTitle(title);
+    public Marker getMarkerById(String id){
+        return markerDao.selectMarkerById(id);
     }
     public List<Marker> getAllMarker(){
         return markerDao.selectAllMarker();
     }
-    public int updataNote(String title,String note,String level){
-        return markerDao.updataNoteByTitle(title,note,level);
+    public int updataNote(int id,String title,String note,String level){
+        return markerDao.updataNoteById(id,title,note,level);
     }
-    public int deleteMarkerByTitle(String title){
-        return markerDao.deleteMarkerByTitle(title);
+    public int deleteMarkerById(String id){
+        return markerDao.deleteMarkerById(id);
+    }
+    public Marker selectTheNew(){
+        return markerDao.selectTheNew();
     }
 }

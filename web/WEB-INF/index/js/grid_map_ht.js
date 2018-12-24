@@ -35,7 +35,7 @@ function get_window_2() {
         "            <textarea name='note'  id='note' cols='40'  disabled style='width:250px; height:250px;padding:0px 10px; border:1px #999999 solid; font-size:14px; color:#fff; background-color:rgba(31,27,24,0.7);OVERFLOW:   hidden;'>"+note_2+"</textarea>        </div>\n" +
         "        <div id='sub' style='float: left;margin: 10px 20px 10px 140px;width: 40px;height: 25px;display:none'>\n" +
         "            <input type='button' onclick='update_note()' class='btn' value='提&nbsp;&nbsp;&nbsp;&nbsp;交'/>        </div>\n" +
-        "        <div id='canl' style='float: left;margin: 10px 20px 10px 20px;width: 40px;height: 25px;display:none'>\n" +
+        "        <div id='cancel' style='float: left;margin: 10px 20px 10px 20px;width: 40px;height: 25px;display:none'>\n" +
         "            <input type='button' onclick='close_InfoWindow()' class='btn' value='取&nbsp;&nbsp;&nbsp;&nbsp;消'/>        </div>\n" +
         "        <div id='change' style='float: left;margin: 10px 20px 10px 20px;width: 40px;height: 25px;'>\n" +
         "            <input type='button' onclick='updata_InfoWindow()' class='btn' value='修&nbsp;&nbsp;&nbsp;&nbsp;改'/>        </div>\n" +

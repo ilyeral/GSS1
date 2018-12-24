@@ -10,17 +10,25 @@
         <result column="point" property="point" jdbcType="VARCHAR" />
         <result column="type" property="type" jdbcType="VARCHAR" />
     </resultMap>
-    <select id="selectNoteByTitle" resultMap="ResultMap">
+    <select id="selectMarkerById" resultMap="ResultMap">
         select
-        note,level
+        title,note,level
         from
         marker
         where
-        title=#{title}
+        id=#{id}
+    </select>
+    <select id="selectTheNew" resultMap="ResultMap">
+        select
+        *
+        from
+        marker
+        order by id desc
+        limit 1
     </select>
     <select id="selectAllMarker" resultMap="ResultMap">
         select
-        id,title,note,point,type
+        id,title,note,point,type,level
         from
         marker
     </select>
@@ -30,16 +38,16 @@
         values
         (#{title},#{note},#{point},#{type},#{level})
     </insert>
-    <delete id="deleteMarkerByTitle">
+    <delete id="deleteMarkerById">
         delete from marker
         where
-        title=#{title}
+        id=#{id}
     </delete>
-    <update id="updataNoteByTitle">
+    <update id="updataNoteById">
         update marker
         set
-        note=#{note},level=#{level}
+        title=#{title},note=#{note},level=#{level}
         where
-        title=#{title}
+        id=#{id}
     </update>
 </mapper>
