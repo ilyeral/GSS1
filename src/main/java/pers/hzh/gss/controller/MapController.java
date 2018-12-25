@@ -31,16 +31,22 @@ public class MapController {
         logger.info("GET map");
         return "index/grid_map";
     }
-    @RequestMapping(value = "/addMarker",method = RequestMethod.POST,produces = "application/text;charset=UTF-8")
+    @RequestMapping(value = "/addMarker",method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public String addMarker(Marker marker){
+    public Marker addMarker(Marker marker){
         logger.info("POST addMarker");
-        int result= markerService.addMarker(marker);
-        int id=0;
-        if(result==1){
-            id=markerService.selectTheNew().getId();
+        int result=0;
+        Marker result_marker=new Marker();
+        try {
+            result = markerService.addMarker(marker);
+        }catch (Exception e){
+            return result_marker;
         }
-        return id+"";
+        if(result==1){
+            result_marker=markerService.selectTheNewest();
+            logger.info("RETURN result_marker");
+        }
+        return result_marker;
     }
     @RequestMapping(value = "/getNote",method = RequestMethod.POST,produces = "application/text;charset=UTF-8")
     @ResponseBody
@@ -71,16 +77,34 @@ public class MapController {
         int result= markerService.deleteMarkerById(id);
         return result+"";
     }
-    @RequestMapping(value = "/addPolygon",method = RequestMethod.POST,produces = "application/text;charset=UTF-8")
+    @RequestMapping(value = "/addPolygon",method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public String addPolygon(Polygon polygon,HttpSession session){
+    public Polygon addPolygon(Polygon polygon,HttpSession session){
         logger.info("POST addPolygon");
-        int result=polygonService.addPolygon(polygon.getName(),polygon.getNote(),(String) session.getAttribute("manager_id"),polygon.getManager(),polygon.getParent(),polygon.getPoint());
-        return result+"";
+        int result=0;
+        Polygon result_polygon=new Polygon();
+        try {
+            result = polygonService.addPolygon(polygon.getName(), polygon.getNote(), (String) session.getAttribute("manager_id"), polygon.getManager(), polygon.getParent(), polygon.getPoint());
+        }catch (Exception e){
+            logger.info(result_polygon.getId());
+            return result_polygon;
+        }
+        if(result==1){
+            result_polygon=polygonService.selectTheNewest();
+        }
+        logger.info(result_polygon.getId());
+        return result_polygon;
     }
-    @RequestMapping(value = "/getPolygonByName",method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/getAllPolygon",method = RequestMethod.GET,produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public Polygon getPolygonByName(String  name){
+    public List<Polygon> getAllPolygon(){
+        logger.info("POST getPolygonByName");
+        List<Polygon> result=polygonService.getAllPolygon();
+        return result;
+    }
+    @RequestMapping(value = "/getPolygonNewest",method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public Polygon getPolygonNewest(String  name){
         logger.info("POST getPolygonByName");
         Polygon result=polygonService.getPolygonByName(name);
         return result;

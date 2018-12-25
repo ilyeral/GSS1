@@ -26,7 +26,7 @@ public class MarkerService {
     public int deleteMarkerById(String id){
         return markerDao.deleteMarkerById(id);
     }
-    public Marker selectTheNew(){
-        return markerDao.selectTheNew();
+    public Marker selectTheNewest(){
+        return markerDao.selectTheNewest();
     }
 }

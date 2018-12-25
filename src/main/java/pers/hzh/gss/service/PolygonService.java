@@ -19,4 +19,7 @@ public class PolygonService {
     public Polygon getPolygonByName(String name){
         return polygonDao.selectPolygonByName(name);
     }
+    public Polygon selectTheNewest(){
+        return polygonDao.selectTheNewest();
+    }
 }

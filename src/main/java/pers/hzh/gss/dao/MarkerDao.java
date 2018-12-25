@@ -13,5 +13,5 @@ public interface MarkerDao {
     List<Marker> selectAllMarker();
     int updataNoteById(@Param("id")int id,@Param("title")String title,@Param("note")String note,@Param("level")String level);
     int deleteMarkerById(@Param("id")String id);
-    Marker selectTheNew();
+    Marker selectTheNewest();
 }

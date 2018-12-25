@@ -27,6 +27,14 @@
         from
         polygon
     </select>
+    <select id="selectTheNewest" resultMap="ResultMap">
+        select
+        *
+        from
+        polygon
+        order by id desc
+        limit 1
+    </select>
     <insert id="insertPolygon">
         insert into polygon
         (name,note,point,parent,maker,manager)

@@ -3,7 +3,7 @@ package pers.hzh.gss.model;
 import java.util.Date;
 
 public class Polygon {
-    private int id;
+
     private String name;
     private String note;
     private String point;
@@ -11,6 +11,10 @@ public class Polygon {
     private String maker;
     private String manager;
     private Date date;
+
+    public Polygon(){
+        super();
+    }
 
     public String getName() {
         return name;
@@ -42,14 +46,6 @@ public class Polygon {
 
     public void setDate(Date date) {
         this.date = date;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getMaker() {

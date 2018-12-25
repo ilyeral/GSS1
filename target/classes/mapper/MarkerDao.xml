@@ -18,7 +18,7 @@
         where
         id=#{id}
     </select>
-    <select id="selectTheNew" resultMap="ResultMap">
+    <select id="selectTheNewest" resultMap="ResultMap">
         select
         *
         from

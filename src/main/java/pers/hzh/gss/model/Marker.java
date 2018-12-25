@@ -1,21 +1,17 @@
 package pers.hzh.gss.model;
 
-public class Marker {
-    private int id;
+public class Marker extends OverLay{
+
     private String title;
     private String note;
     private String point;
     private String type;
     private String level;
 
-    public Marker(){}
-    public int getId() {
-        return id;
+    public Marker(){
+        super();
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getTitle() {
         return title;

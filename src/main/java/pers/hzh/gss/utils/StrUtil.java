@@ -2,7 +2,10 @@ package pers.hzh.gss.utils;
 
 import org.apache.log4j.Logger;
 import pers.hzh.gss.controller.ManagerController;
+import pers.hzh.gss.model.Point;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class StrUtil {
@@ -80,4 +83,13 @@ public class StrUtil {
 
         return false;
     }
+     public static List<Point> strToPointList(String point_list){
+         String[] point_arr=point_list.split("#");
+         List<Point> point=new ArrayList<Point>();
+         for(int i=0;i<point_arr.length-1;i++){
+             Point point_=new Point(point_arr[i].split(",")[0],point_arr[i].split(",")[1]);
+             point.add(point_);
+         }
+        return point;
+     }
 }

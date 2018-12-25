@@ -17,6 +17,7 @@ map.addControl(new BMap.OverviewMapControl(p));//小地图
 //map.addControl(new BMap.MapTypeControl());//地图类型
 map.setCurrentCity("哈尔滨"); // 仅当设置城市信息时，MapTypeControl的切换功能才能可用
 add_all_marker();
+add_all_polygon();
 ///////////////////////////////////////////////////////////////////////////////
 var addMarkerEvent=0;//////////////////////////////////////////标记按钮点击状态
 function switchAddMarker_() {////////////////////////////////切换标记按钮点击状态
@@ -28,15 +29,17 @@ function switchAddMarker_() {////////////////////////////////切换标记按钮�
         disaddmarker_();
     }
 }
+var temp_marker_add;
 var event_a= function(e) {                                  ////////添加标注点
-    var allOverlay = map.getOverlays();
-    for (var i = 0; i < allOverlay.length; i++) {
-        if (allOverlay[i].toString() == '[object Marker]'){
-            if (allOverlay[i].getTitle() == "新建") {
-                map.removeOverlay(allOverlay[i]);
-            }
-        }
-    }
+    // var allOverlay = map.getOverlays();
+    // for (var i = 0; i < allOverlay.length; i++) {
+    //     if (allOverlay[i].toString() == '[object Marker]'){
+    //         if (allOverlay[i].getTitle() == "新建") {
+    //             map.removeOverlay(allOverlay[i]);
+    //         }
+    //     }
+    // }
+    map.removeOverlay(temp_marker_add);
     var marker = new BMap.Marker(e.point);  // 创建标注
     marker.setTitle("新建");
     map.addOverlay(marker);               // 将标注添加到地图中
@@ -45,6 +48,7 @@ var event_a= function(e) {                                  ////////添加标注
     var sContent =get_window_1();
     var infoWindow = new BMap.InfoWindow(sContent);  // 创建信息窗口对象
     marker.openInfoWindow(infoWindow);
+    temp_marker_add=marker;
 }
 //添加、移除点击事件
 function addEventListener_() {
@@ -58,19 +62,22 @@ function removeEventListener_() {
 
     addMarkerEvent=0;
 }
+
 function addmarker_(){/////////////////////////////////////////////添加marker
     var point;
     var marker;
     var title;
-    var allOverlay = map.getOverlays();
-    for (var i = 0; i < allOverlay.length; i++) {
-        if (allOverlay[i].toString() == '[object Marker]') {
-            if (allOverlay[i].getTitle() == "新建") {
-                point = allOverlay[i].getPosition();
-                marker = allOverlay[i];
-            }
-        }
-    }
+    // var allOverlay = map.getOverlays();
+    // for (var i = 0; i < allOverlay.length; i++) {
+    //     if (allOverlay[i].toString() == '[object Marker]') {
+    //         if (allOverlay[i].getTitle() == "新建") {
+    //             point = allOverlay[i].getPosition();
+    //             marker = allOverlay[i];
+    //         }
+    //     }
+    // }
+    marker=temp_marker_add;
+    point = marker.getPosition();
     title=document.getElementById('title').value;
     document.getElementById('point').value=point.lng+','+point.lat;
     document.getElementById('type').value='marker';
@@ -80,22 +87,23 @@ function addmarker_(){/////////////////////////////////////////////添加marker
     $.ajax({
         //几个参数需要注意一下
         type: "POST",//方法类型
-        dataType: "text",//预期服务器返回的数据类型
+        dataType: "json",//预期服务器返回的数据类型
         url: getRootPath()+"/index/addMarker" ,//url
         data: $('#marker_form').serialize(),
         contentType : "application/x-www-form-urlencoded;charset=utf-8",
         success: function (result) {
             console.log(result);//打印服务端返回的数据(调试用)
-            if (result!="0") {
-                marker.setTitle(title);
-                marker.id=result;
-                marker.closeInfoWindow();
+            if (result.id!=0) {
+                map.removeOverlay(temp_marker_add);
+                // marker.setTitle(title);
+                // marker.id=result.id;
+                // marker.closeInfoWindow();
+                add_marker(result);
                 removeEventListener_();
-                addMarkerListener(marker);
-                add_marker_to_li(result,title);
-            }else if(result=="0"){
+            }else {
                 removeEventListener_();
                 alert("添加失败，请检查名称是否重复");
+
             }
         },
         error : function(e) {
@@ -210,7 +218,7 @@ function add_all_marker(){///////////////////////////////////////////向地图�
         success: function (result) {
             console.log(result);//打印服务端返回的数据(调试用)
             $.each(result,function (index, item) {
-                add_marker_by_item(item);
+                add_marker(item);
             });
         },
         error : function(e) {
@@ -219,10 +227,10 @@ function add_all_marker(){///////////////////////////////////////////向地图�
     });
 
 }
-function add_marker_by_item(item) {//////////////////////////////////添加标记物
-    console.log("add_marker_by_item");
+function add_marker(item) {//////////////////////////////////添加标记物
+    console.log("add_marker");
     add_marker_to_map(item)
-    add_marker_to_li(item.id,item.title);
+    add_marker_to_li(item);
 }
 function add_marker_to_map(item) {///////////////////////////添加标记物-marker
     console.log("add_marker_to_map");
@@ -235,7 +243,7 @@ function add_marker_to_map(item) {///////////////////////////添加标记物-mar
     marker.setTitle(item.title);
     marker.id=item.id;
     map.addOverlay(marker);               // 将标注添加到地图中
-    marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+    //marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
     addMarkerListener(marker);
 }
 ///////////////////////////////////////////////////////////////////////////////初始化列表
@@ -245,9 +253,10 @@ function del(n)
     var t=s.childNodes.length;
     s.removeChild(s.childNodes[n-1]);
 }
-function add_marker_to_li(id,title)///////////////////////////////////////////////添加到列表
+function add_marker_to_li(marker)///////////////////////////////////////////////添加到列表
 {
-
+    var id=marker.id;
+    var title=marker.title;
     $("#Marker_List").append("<li id='li"+id+"' class='sidebar_li_2_1' onclick='goto_marker_by_id("+id+")'><a id='a"+id+"' class='sidebar_a_2_1'>&nbsp;<div id='show_title"+id+"'class='show_title'>"+title+"</div><div id='del_marker_btn"+id+"'class='del_marker_btn'onclick='delete_marker_by_id("+id+")'>删除</div></a><div id='del_marker'></div></li>");
     $("#li"+id).attr("class",'sidebar_li_2_1');
     $("#a"+id).attr("class",'sidebar_a_2_1');
@@ -384,18 +393,20 @@ function submit_overlay_form() {
     $.ajax({
         //几个参数需要注意一下
         type: "POST",//方法类型
-        dataType: "text",//预期服务器返回的数据类型
+        dataType: "json",//预期服务器返回的数据类型
         url: getRootPath()+"/index/addPolygon" ,//url
         data: msg,
         async:true,
         success: function (result) {
             console.log(result);//打印服务端返回的数据(调试用)
-            if(result==1){
+            if(result.id!=0){
                 closeDialog();
                 delete_temp_overlay();
-                add_polygon_by_name(name);
+                add_polygon(result);
             }else{
-
+                closeDialog();
+                delete_temp_overlay();
+                alert("添加失败！检查名称是否重复！");
             }
         },
         error : function(e) {
@@ -407,24 +418,6 @@ function cancel_overlay_form() {/////////////////////////////////polygon添加�
     closeDialog();
     delete_temp_overlay();
 }
-function add_polygon_by_name(name) {
-    var msg={"name":name};
-    $.ajax({
-        //几个参数需要注意一下
-        type: "POST",//方法类型
-        dataType: "json",//预期服务器返回的数据类型
-        url: getRootPath()+"/index/getPolygonByName" ,//url
-        data: msg,
-        async:true,
-        success: function (result) {
-            console.log(result);//打印服务端返回的数据(调试用)
-            add_polygon(result);
-        },
-        error : function(e) {
-            return false;
-        }
-    });
-}
 function add_polygon(result) {
 
     var id=result.id;
@@ -434,7 +427,7 @@ function add_polygon(result) {
     var date=result.date;
     var manager=result.manager;
     var parent=result.parent;
-    var point=result.point;
+    var point=result.point+"";
     var arr=point.split("#");
     var point_list=[];
     for (var i = 0; i < arr.length-1; i++) {
@@ -452,6 +445,56 @@ function add_polygon(result) {
     map.addOverlay(polygon);           //增加多边形
 
     console.log("add_polygon");//打印服务端返回的数据(调试用)
+}
+
+function add_all_polygon(){///////////////////////////////////////////向地图中添加所有标记物-初始化
+    console.log("add_all_polygon");
+    $.ajax({
+        //几个参数需要注意一下
+        type: "GET",//方法类型
+        dataType: "json",//预期服务器返回的数据类型
+        url: getRootPath()+"/index/getAllPolygon" ,//url
+        success: function (result) {
+            console.log(result);//打印服务端返回的数据(调试用)
+            $.each(result,function (index, item) {
+                add_polygon(item);
+            });
+        },
+        error : function(e) {
+            alert("异常！");
+        }
+    });
+
+}
+function f() {
+    var point=new BMap.Point(11,10);
+    var arr_point=[new BMap.Point(9,11),new BMap.Point(11,11),new BMap.Point(11,9),new BMap.Point(9,9)];
+    // var point=temp_marker.getPosition();
+    // var arr_point=temp_polygon.getPath();
+    console.log(point);//打印服务端返回的数据(调试用)
+    console.log(arr_point);//打印服务端返回的数据(调试用)
+
+    result=isInAccurateArea(point,arr_point);
+    console.log("isInAccurateArea:"+result);//打印服务端返回的数据(调试用)
+    result1=_isInsidePolygon(point,arr_point);
+    console.log("_isInsidePolygon:"+result1);//打印服务端返回的数据(调试用)
+}
+function isInAccurateArea(point,arr_point) {////////////////////////////////////////////////////判断点是否在多边形内
+    var vertexNum=arr_point.length;
+    var result=false;
+    for(var i=0,j=vertexNum-1;i<vertexNum;j=i++) {
+        if ((arr_point[i].lng > point.lng) != (arr_point[j].lng > point.lng)
+            && (point.lat < (arr_point[j].lat - arr_point[i].lat) * (point.lng - arr_point[i].lng) / (arr_point[j].lng - arr_point[i].lng)
+                + arr_point[i].lat)) {
+            result = !result;
+        }
+    }
+    return result;
+}
+function _isInsidePolygon(pt, poly) {
+    for (var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
+        ((poly[i].lat <= pt.lat && pt.lat < poly[j].lat) || (poly[j].lat <= pt.lat && pt.lat < poly[i].lat))  && (pt.lng < (poly[j].lng - poly[i].lng) * (pt.lat - poly[i].lat) / (poly[j].lat - poly[i].lat) + poly[i].lng)  && (c = !c);
+    return c;
 }
 //开启、关闭滚轮缩放
 function enableScrollWheelZoom() {
