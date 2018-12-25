@@ -16,10 +16,13 @@ public class PolygonService {
     public List<Polygon> getAllPolygon(){
         return polygonDao.selectAllPolygon();
     }
-    public Polygon getPolygonByName(String name){
-        return polygonDao.selectPolygonByName(name);
+    public Polygon getPolygonById(int id){
+        return polygonDao.selectPolygonById(id);
     }
     public Polygon selectTheNewest(){
         return polygonDao.selectTheNewest();
+    }
+    public List<Polygon> getPolygonByParent(int parent){
+        return polygonDao.selectPolygonByParent(parent);
     }
 }

@@ -13,13 +13,21 @@
         <result column="manager" property="manager" jdbcType="VARCHAR" />
         <result column="date" property="date" jdbcType="DATE" />
     </resultMap>
-    <select id="selectPolygonByName" resultMap="ResultMap">
+    <select id="selectPolygonById" resultMap="ResultMap">
         select
         id,name,note,point,parent,maker,manager,date
         from
         polygon
         where
-        name=#{name}
+        id=#{id}
+    </select>
+    <select id="selectPolygonByParent" resultMap="ResultMap">
+        select
+        id,name,note,point,parent,maker,manager,date
+        from
+        polygon
+        where
+        parent=#{parent}
     </select>
     <select id="selectAllPolygon" resultMap="ResultMap">
         select

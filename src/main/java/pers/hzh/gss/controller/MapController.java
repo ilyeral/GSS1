@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import pers.hzh.gss.model.Marker;
+import pers.hzh.gss.model.OverLay;
 import pers.hzh.gss.model.Polygon;
 import pers.hzh.gss.service.MarkerService;
 import pers.hzh.gss.service.PolygonService;
+import pers.hzh.gss.utils.OverLayUtil;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -77,6 +79,29 @@ public class MapController {
         int result= markerService.deleteMarkerById(id);
         return result+"";
     }
+
+    @RequestMapping(value = "/checkPolygon",method = RequestMethod.POST,produces = "application/text;charset=UTF-8")
+    @ResponseBody
+    public String checkPolygon(Polygon polygon){
+        logger.info("POST checkPolygon");
+        int result=1;
+        List<Polygon> polygons=polygonService.getPolygonByParent(polygon.getParent());
+        for(int i=0;i<polygons.size();i++){
+            if(OverLayUtil.polygonIntersect(polygon,polygons.get(i))!=0){
+                result=0;
+            }
+        }
+        Polygon polygon1;
+        if(polygon.getParent()!=0){
+            polygon1=polygonService.getPolygonById(polygon.getParent());
+            if(OverLayUtil.polygonIntersect(polygon,polygon1)!=2){
+                result=-1;
+            }
+        }
+        return result+"";
+    }
+
+
     @RequestMapping(value = "/addPolygon",method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
     @ResponseBody
     public Polygon addPolygon(Polygon polygon,HttpSession session){
@@ -102,11 +127,11 @@ public class MapController {
         List<Polygon> result=polygonService.getAllPolygon();
         return result;
     }
-    @RequestMapping(value = "/getPolygonNewest",method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/getPolygonById",method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public Polygon getPolygonNewest(String  name){
-        logger.info("POST getPolygonByName");
-        Polygon result=polygonService.getPolygonByName(name);
+    public Polygon getPolygonNewest(int  id){
+        logger.info("POST getPolygonById");
+        Polygon result=polygonService.getPolygonById(id);
         return result;
     }
 }

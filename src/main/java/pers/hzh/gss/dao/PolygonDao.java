@@ -10,6 +10,7 @@ import java.util.List;
 public interface PolygonDao {
     int insertPolygon(@Param("name")String name,@Param("note")String note,@Param("maker")String maker,@Param("manager")String manager,@Param("parent")int parent,@Param("point")String point);
     List<Polygon> selectAllPolygon();
-    Polygon selectPolygonByName(@Param("name") String name);
+    Polygon selectPolygonById(@Param("id") int id);
     Polygon selectTheNewest();
+    List<Polygon> selectPolygonByParent(@Param("parent") int parent);
 }

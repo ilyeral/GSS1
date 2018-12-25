@@ -2,7 +2,7 @@ package pers.hzh.gss.model;
 
 import java.util.Date;
 
-public class Polygon {
+public class Polygon extends OverLay{
 
     private String name;
     private String note;
@@ -14,8 +14,8 @@ public class Polygon {
 
     public Polygon(){
         super();
+        parent=0;
     }
-
     public String getName() {
         return name;
     }

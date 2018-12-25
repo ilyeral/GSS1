@@ -354,7 +354,37 @@ function open_drawingManager(){/////////////////////////////////////////////////
         temp_polygon.name="新建";
         console.log("over_drow");//打印服务端返回的数据(调试用)
         console.log(temp_polygon);//打印服务端返回的数据(调试用)
-        openDialog();
+
+        var point=temp_polygon.getPath();
+        var point_list="";
+        for (var i = 0; i < point.length; i++) {
+            point_list+=point[i].lng+","+point[i].lat+"#";
+        }
+        var msg={"point":point_list};
+        // console.log("point="+point[0]);//打印服务端返回的数据(调试用)
+        $.ajax({
+            //几个参数需要注意一下
+            type: "POST",//方法类型
+            dataType: "text",//预期服务器返回的数据类型
+            url: getRootPath()+"/index/checkPolygon" ,//url
+            data: msg,
+            async:true,
+            success: function (result) {
+                console.log(result);//打印服务端返回的数据(调试用)
+                if(result=="1"){
+                    openDialog();
+                }else if(result=="0"){
+                    delete_temp_overlay();
+                    alert("错误,该区域与其他区域有冲突！");
+                }else if(result=="-1"){
+                    delete_temp_overlay();
+                    alert("错误,该区域超出上级区域！");
+                }
+            },
+            error : function(e) {
+                return false;
+            }
+        });
     };
     drawingManager.addEventListener('overlaycomplete', overlaycomplete);
     document.getElementById('add_overlay').style.background="#404040";
@@ -466,36 +496,7 @@ function add_all_polygon(){///////////////////////////////////////////向地图�
     });
 
 }
-function f() {
-    var point=new BMap.Point(11,10);
-    var arr_point=[new BMap.Point(9,11),new BMap.Point(11,11),new BMap.Point(11,9),new BMap.Point(9,9)];
-    // var point=temp_marker.getPosition();
-    // var arr_point=temp_polygon.getPath();
-    console.log(point);//打印服务端返回的数据(调试用)
-    console.log(arr_point);//打印服务端返回的数据(调试用)
 
-    result=isInAccurateArea(point,arr_point);
-    console.log("isInAccurateArea:"+result);//打印服务端返回的数据(调试用)
-    result1=_isInsidePolygon(point,arr_point);
-    console.log("_isInsidePolygon:"+result1);//打印服务端返回的数据(调试用)
-}
-function isInAccurateArea(point,arr_point) {////////////////////////////////////////////////////判断点是否在多边形内
-    var vertexNum=arr_point.length;
-    var result=false;
-    for(var i=0,j=vertexNum-1;i<vertexNum;j=i++) {
-        if ((arr_point[i].lng > point.lng) != (arr_point[j].lng > point.lng)
-            && (point.lat < (arr_point[j].lat - arr_point[i].lat) * (point.lng - arr_point[i].lng) / (arr_point[j].lng - arr_point[i].lng)
-                + arr_point[i].lat)) {
-            result = !result;
-        }
-    }
-    return result;
-}
-function _isInsidePolygon(pt, poly) {
-    for (var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
-        ((poly[i].lat <= pt.lat && pt.lat < poly[j].lat) || (poly[j].lat <= pt.lat && pt.lat < poly[i].lat))  && (pt.lng < (poly[j].lng - poly[i].lng) * (pt.lat - poly[i].lat) / (poly[j].lat - poly[i].lat) + poly[i].lng)  && (c = !c);
-    return c;
-}
 //开启、关闭滚轮缩放
 function enableScrollWheelZoom() {
     map.enableScrollWheelZoom(true);
