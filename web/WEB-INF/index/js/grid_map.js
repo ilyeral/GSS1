@@ -18,14 +18,17 @@ map.addControl(new BMap.OverviewMapControl(p));//小地图
 map.setCurrentCity("哈尔滨"); // 仅当设置城市信息时，MapTypeControl的切换功能才能可用
 add_all_marker();
 add_all_polygon();
+
+var manager=[];
+update_manager(get_all_manager());//////////////////////////////////////更新记录用户颜色，添加完新用户要调用此方法
 ///////////////////////////////////////////////////////////////////////////////
 var addMarkerEvent=0;//////////////////////////////////////////标记按钮点击状态
 function switchAddMarker_() {////////////////////////////////切换标记按钮点击状态
     if(addMarkerEvent==0){
-        console.log('addEventListener');//打印服务端返回的数据(调试用)
+        //console.log('addEventListener');//打印服务端返回的数据(调试用)
         addEventListener_();
     }else{
-        console.log('disaddEventListener');//打印服务端返回的数据(调试用)
+        //console.log('disaddEventListener');//打印服务端返回的数据(调试用)
         disaddmarker_();
     }
 }
@@ -81,9 +84,9 @@ function addmarker_(){/////////////////////////////////////////////添加marker
     title=document.getElementById('title').value;
     document.getElementById('point').value=point.lng+','+point.lat;
     document.getElementById('type').value='marker';
-    console.log($('#marker_form').serialize());//打印服务端返回的数据(调试用)
-    console.log(title);//打印服务端返回的数据(调试用)
-    console.log(point.lng+','+point.lat);//打印服务端返回的数据(调试用)
+    //console.log($('#marker_form').serialize());//打印服务端返回的数据(调试用)
+    //console.log(title);//打印服务端返回的数据(调试用)
+    //console.log(point.lng+','+point.lat);//打印服务端返回的数据(调试用)
     $.ajax({
         //几个参数需要注意一下
         type: "POST",//方法类型
@@ -92,7 +95,7 @@ function addmarker_(){/////////////////////////////////////////////添加marker
         data: $('#marker_form').serialize(),
         contentType : "application/x-www-form-urlencoded;charset=utf-8",
         success: function (result) {
-            console.log(result);//打印服务端返回的数据(调试用)
+            //console.log(result);//打印服务端返回的数据(调试用)
             if (result.id!=0) {
                 map.removeOverlay(temp_marker_add);
                 // marker.setTitle(title);
@@ -131,7 +134,7 @@ var marker_click= function(e){///////////////////////////////////////事件-mark
     var marker=this;
     marker_2_title=this.getTitle();
     var msg={"id":this.id};
-    console.log("id:"+this.id);//打印服务端返回的数据(调试用)
+    //console.log("id:"+this.id);//打印服务端返回的数据(调试用)
     $.ajax({
         //几个参数需要注意一下
         type: "POST",//方法类型
@@ -140,7 +143,7 @@ var marker_click= function(e){///////////////////////////////////////事件-mark
         data: msg,
         async:true,
         success: function (result) {
-            console.log(result);//打印服务端返回的数据(调试用)
+            //console.log(result);//打印服务端返回的数据(调试用)
             var arr=result.split("#");
             marker_2_title=arr[0];
             note_2=arr[1];
@@ -182,7 +185,7 @@ function update_note(){////////////////////////////////////////////修改note
         data: msg,
         async:true,
         success: function (result) {
-            console.log(result);//打印服务端返回的数据(调试用)
+            //console.log(result);//打印服务端返回的数据(调试用)
             if(result==1){
                 close_InfoWindow();
             }else{
@@ -200,14 +203,14 @@ function update_note(){////////////////////////////////////////////修改note
 
 ///////////////////////////////////////////////////////////////////////////////初始化覆盖物
 function add_all_marker(){///////////////////////////////////////////向地图中添加所有标记物-初始化
-    console.log("add_all_marker");
+    //console.log("add_all_marker");
     $.ajax({
         //几个参数需要注意一下
         type: "GET",//方法类型
         dataType: "json",//预期服务器返回的数据类型
         url: getRootPath()+"/index/getAllMarker" ,//url
         success: function (result) {
-            console.log(result);//打印服务端返回的数据(调试用)
+            //console.log(result);//打印服务端返回的数据(调试用)
             $.each(result,function (index, item) {
                 add_marker(item);
             });
@@ -219,17 +222,17 @@ function add_all_marker(){///////////////////////////////////////////向地图�
 
 }
 function add_marker(item) {//////////////////////////////////添加标记物
-    console.log("add_marker");
+    //console.log("add_marker");
     add_marker_to_map(item)
     add_marker_to_li(item);
 }
 function add_marker_to_map(item) {///////////////////////////添加标记物-marker
-    console.log("add_marker_to_map");
+    //console.log("add_marker_to_map");
     var arr=item.point;
     var point_x=parseFloat(arr.split(",")[0]);
     var point_y=parseFloat(arr.split(",")[1]);
     var point = new BMap.Point(point_x, point_y);
-    console.log(point.lng+" "+point.lat);
+    //console.log(point.lng+" "+point.lat);
     var marker = new BMap.Marker(point);  // 创建标注
     marker.setTitle(item.title);
     marker.id=item.id;
@@ -278,7 +281,7 @@ function delete_marker_by_id(id) {////////////////////////////////////////删除
         data: msg,
         async:true,
         success: function (result) {
-            console.log(result);//打印服务端返回的数据(调试用)
+            //console.log(result);//打印服务端返回的数据(调试用)
             if(result==1){
                 $("#li"+id).hide();
                 var allOverlay = map.getOverlays();
@@ -337,7 +340,7 @@ var polygon_click= function(e){///////////////////////////////////////事件-pol
     this.setStrokeOpacity(1);
     this.setStrokeWeight(2);
     parent=this.id;
-    console.log("选中:"+parent);//打印服务端返回的数据(调试用)
+    //console.log("选中:"+parent);//打印服务端返回的数据(调试用)
     open_drawingManager(parent);
 }
 function polygon_click_recover() {////////////////////////////////////所有polygon覆盖物恢复形状
@@ -398,8 +401,8 @@ function open_drawingManager(){/////////////////////////////////////////////////
     overlaycomplete = function(e){
         temp_polygon=e.overlay;
         temp_polygon.name="新建";
-        console.log("over_drow");//打印服务端返回的数据(调试用)
-        console.log(temp_polygon);//打印服务端返回的数据(调试用)
+        //console.log("over_drow");//打印服务端返回的数据(调试用)
+        //console.log(temp_polygon);//打印服务端返回的数据(调试用)
 
         var point=temp_polygon.getPath();
         var point_list="";
@@ -407,7 +410,7 @@ function open_drawingManager(){/////////////////////////////////////////////////
             point_list+=point[i].lng+","+point[i].lat+"#";
         }
         var msg={"point":point_list,"parent":parent};
-        console.log(msg);//打印服务端返回的数据(调试用)
+        //console.log(msg);//打印服务端返回的数据(调试用)
         $.ajax({
             //几个参数需要注意一下
             type: "POST",//方法类型
@@ -416,7 +419,7 @@ function open_drawingManager(){/////////////////////////////////////////////////
             data: msg,
             async:true,
             success: function (result) {
-                console.log(result);//打印服务端返回的数据(调试用)
+                //console.log(result);//打印服务端返回的数据(调试用)
                 if(result=="1"){
                     openDialog();
                 }else if(result=="0"){
@@ -458,25 +461,31 @@ function closeDialog(){/////////////////////////////////////////////////////////
 }
 function add_all_manager_to_select()///////////////////////////////////////////////manager添加到select
 {
+    $.each(get_all_manager(),function (index, item) {
+        add_manager_to_select(item);
+    });
+}
+function get_all_manager() {/////////////////////////////////////////////////获取用户信息请求
+    var result_;
     $.ajax({
         //几个参数需要注意一下
         type: "GET",//方法类型
         dataType: "json",//预期服务器返回的数据类型
         url: getRootPath()+"/getAllManager" ,//url
+        async: false,
         success: function (result) {
             console.log(result);//打印服务端返回的数据(调试用)
-            $.each(result,function (index, item) {
-                add_manager_to_select(item);
-            });
+            result_= result;
         },
         error : function(e) {
             return false;
         }
     });
-
+    console.log(result_);//打印服务端返回的数据(调试用)
+    return result_;
 }
 function add_manager_to_select(item) {
-    console.log("add_manager_to_select");//打印服务端返回的数据(调试用)
+    //console.log("add_manager_to_select");//打印服务端返回的数据(调试用)
 
     var id=item.id;
     var color=item.color;
@@ -487,7 +496,7 @@ function add_manager_to_select(item) {
     $("#option"+id).css("opacity",0.5);
 }
 function clean_manager_select() {
-    console.log("clean_manager_select");//打印服务端返回的数据(调试用)
+    //console.log("clean_manager_select");//打印服务端返回的数据(调试用)
 
     $("#polygon_manager").empty();
     $("#polygon_manager").append("<option value='0' id='option0' class='polygon_input_option'>管理者</option>");
@@ -498,17 +507,17 @@ function delete_temp_overlay() {////////////////////////////////////////////////
     map.removeOverlay(temp_polygon);
 }
 function submit_overlay_form() {//////////////////////////////////////////////////提交polygo信息 保存
-    var name=document.getElementById('name').value;
+    var name=document.getElementById('polygon_name').value;
     temp_polygon.name=name;
     var point=temp_polygon.getPath();
     var point_list="";
     for (var i = 0; i < point.length; i++) {
         point_list+=point[i].lng+","+point[i].lat+"#";
     }
-    var note=document.getElementById('note').value;
-    var manager=document.getElementById('manager').value;
+    var note=document.getElementById('polygon_note').value;
+    var manager=document.getElementById('polygon_manager').value;
     var msg={"name":name,"note":note,"point":point_list,"manager":manager,"parent":parent};
-    // console.log("point="+point[0]);//打印服务端返回的数据(调试用)
+    //console.log(msg);//打印服务端返回的数据(调试用)
     $.ajax({
         //几个参数需要注意一下
         type: "POST",//方法类型
@@ -517,7 +526,7 @@ function submit_overlay_form() {////////////////////////////////////////////////
         data: msg,
         async:true,
         success: function (result) {
-            console.log(result);//打印服务端返回的数据(调试用)
+            //console.log(result);//打印服务端返回的数据(调试用)
             if(result.id!=0){
                 closeDialog();
                 close_drawingManager();
@@ -541,13 +550,13 @@ function cancel_overlay_form() {/////////////////////////////////polygon添加�
 }
 function add_polygon(polygon) {
     add_polygon_to_map(polygon);
-    console.log("add_polygon_to_map");//打印服务端返回的数据(调试用)
+    //console.log("add_polygon_to_map");//打印服务端返回的数据(调试用)
     if(polygon.parent==0){
         add_polygon_to_li(polygon);
-        console.log("add_polygon_to_li");//打印服务端返回的数据(调试用)
+        //console.log("add_polygon_to_li");//打印服务端返回的数据(调试用)
     }else{
         add_polygon_to_li_child(polygon);
-        console.log("add_polygon_to_li_child");//打印服务端返回的数据(调试用)
+        //console.log("add_polygon_to_li_child");//打印服务端返回的数据(调试用)
     }
 
 }
@@ -572,10 +581,11 @@ function add_polygon_to_map(result) {
         var point_i=new BMap.Point(point_x,point_y);
         point_list.push(point_i);
     }
-    console.log(point_list);//打印服务端返回的数据(调试用)
+    //console.log(point_list);//打印服务端返回的数据(调试用)
 
-    var polygon = new BMap.Polygon(point_list, {strokeColor: "red",fillColor: "#F1F1F1",strokeWeight: 1,strokeOpacity: 0.5,fillOpacity: 0.5});  //创建多边形
-    console.log(polygon);//打印服务端返回的数据(调试用)
+    var polygon = new BMap.Polygon(point_list, {strokeColor: get_color_by_id(maker),fillColor: get_color_by_id(manager),strokeWeight: 1,strokeOpacity: 0.5,fillOpacity: 0.5});  //创建多边形
+    //console.log(polygon);//打印服务端返回的数据(调试用)
+    console.log({strokeColor: get_color_by_id(maker),fillColor: get_color_by_id(id),strokeWeight: 1,strokeOpacity: 0.5,fillOpacity: 0.5});//打印服务端返回的数据(调试用)
     polygon.id=id;
     polygon.name=name;
     polygon.note=note;
@@ -583,12 +593,13 @@ function add_polygon_to_map(result) {
     polygon.date=date;
     polygon.manager=manager;
     polygon.parent=parent;
-
+    polygon.addEventListener("click",polygon_click_1)
     map.addOverlay(polygon);           //增加多边形
 
-    console.log("add_polygon");//打印服务端返回的数据(调试用)
+    //console.log("add_polygon");//打印服务端返回的数据(调试用)
 }
-function add_polygon_to_li(polygon) {
+
+function add_polygon_to_li(polygon) {//////////////////////////////////////////////////////////添加polygon到列表
     var id=polygon.id;
     var name=polygon.name;
     $("#polygon_List").append("" +
@@ -601,7 +612,7 @@ function add_polygon_to_li(polygon) {
     $("#polygona"+id).attr("class",'sidebar_a_2_1');
     $("#Child_Polygon_List"+id).attr("class",'sidebar_ul_3');
     $(document).on("click",'#polygonli'+id,function(){
-        console.log('#polygonli'+id+" is click");//打印服务端返回的数据(调试用)
+        //console.log('#polygonli'+id+" is click");//打印服务端返回的数据(调试用)
         $(".sidebar_ul_3").hide();
         $('#Child_Polygon_List'+id).show();
     });
@@ -618,14 +629,14 @@ function add_polygon_to_li_child(polygon) {
     $("#child_polygon_a"+id).attr("class",'sidebar_a_3');
 }
 function add_all_polygon(){///////////////////////////////////////////向地图中添加所有标记物-初始化
-    console.log("add_all_polygon");
+    //console.log("add_all_polygon");
     $.ajax({
         //几个参数需要注意一下
         type: "GET",//方法类型
         dataType: "json",//预期服务器返回的数据类型
         url: getRootPath()+"/index/getAllPolygon" ,//url
         success: function (result) {
-            console.log(result);//打印服务端返回的数据(调试用)
+            //console.log(result);//打印服务端返回的数据(调试用)
             $.each(result,function (index, item) {
                 add_polygon(item);
             });
@@ -637,7 +648,7 @@ function add_all_polygon(){///////////////////////////////////////////向地图�
 }
 // function add_polygon_by_parent(parent){///////////////////////////////////////////向地图中添加所有标记物-初始化
 //     var msg={"parent":parent};
-//     console.log("add_polygon_by_parent");
+//     //console.log("add_polygon_by_parent");
 //     $.ajax({
 //         //几个参数需要注意一下
 //         type: "POST",//方法类型
@@ -646,7 +657,7 @@ function add_all_polygon(){///////////////////////////////////////////向地图�
 //         data: msg,
 //         async:true,
 //         success: function (result) {
-//             console.log(result);//打印服务端返回的数据(调试用)
+//             //console.log(result);//打印服务端返回的数据(调试用)
 //             $.each(result,function (index, item) {
 //                 add_polygon_child(item);
 //             });
@@ -662,7 +673,7 @@ function add_all_polygon(){///////////////////////////////////////////向地图�
 $(document).ready(function(){
     $(".sidebar_ul_2").hide();
     $(".sidebar_a_1").click(function(){
-        console.log("sidebar_a_1 is click");//打印服务端返回的数据(调试用)
+        //console.log("sidebar_a_1 is click");//打印服务端返回的数据(调试用)
         $(".sidebar_ul_2").hide();
         $(this).next().show();
         $(".del_marker_btn").hide();
@@ -672,13 +683,15 @@ $(document).ready(function(){
 
 
 var polygon_click_1= function(e){///////////////////////////////////////事件-polygon点击
+    //console.log(e);//打印服务端返回的数据(调试用)
+    var polygon=e.currentTarget;
     $("#the_message").empty();
     $("#the_message").append("" +
-        "<p>区域名称："+e.name+"</p>" +
-        "<p>备注："+e.note+"</p>" +
-        "<p>管理者："+e.manager+"</p>" +
-        "<p>创建者："+e.maker+"</p>" +
-        "<p>创建时间："+e.date+"</p>");
+        "<p>区域名称："+polygon.name+"</p>" +
+        "<p>备注："+polygon.note+"</p>" +
+        "<p>管理者："+polygon.manager+"</p>" +
+        "<p>创建者："+polygon.maker+"</p>" +
+        "<p>创建时间："+polygon.date+"</p>");
 }
 function polygon_li_click(id) {
     var polygon=get_polygon_in_map_by_id(id);
@@ -689,10 +702,10 @@ function polygon_li_click(id) {
         "<p>管理者："+polygon.manager+"</p>" +
         "<p>创建者："+polygon.maker+"</p>" +
         "<p>创建时间："+polygon.date+"</p>");
-    console.log("polygon_li_click-"+id);//打印服务端返回的数据(调试用)
+    //console.log("polygon_li_click-"+id);//打印服务端返回的数据(调试用)
     var result=map.getViewport(polygon.getPath(),{});
-    console.log("polygon_li_click"+result.zoom);//打印服务端返回的数据(调试用)
-    console.log("polygon_li_click"+result.center.lng);//打印服务端返回的数据(调试用)
+    //console.log("polygon_li_click"+result.zoom);//打印服务端返回的数据(调试用)
+    //console.log("polygon_li_click"+result.center.lng);//打印服务端返回的数据(调试用)
     var point=result.center;
     var zoom=result.zoom;
     map.setZoom(zoom);
@@ -709,7 +722,20 @@ function get_polygon_in_map_by_id(id) {
     }
 }
 
-
+function update_manager(result) {
+    console.log(result);//打印服务端返回的数据(调试用)
+    manager=[];
+    $.each(result,function (index, item) {
+        manager.push(item);
+    });
+}
+function get_color_by_id(id) {
+    for(var i=0;i<manager.length;i++){
+        if(manager[i].id==id){
+            return manager[i].color;
+        }
+    }
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////
