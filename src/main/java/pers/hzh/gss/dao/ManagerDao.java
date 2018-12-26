@@ -4,6 +4,8 @@ import org.apache.ibatis.annotations.Param;
 import org.mybatis.spring.annotation.MapperScan;
 import pers.hzh.gss.model.Manager;
 
+import java.util.List;
+
 @MapperScan
 public interface ManagerDao {
     /**
@@ -35,4 +37,5 @@ public interface ManagerDao {
      * @return
      */
     int updatePassword(@Param("id")String id,@Param("password")String password);
+    List<Manager> selectAllManager();
 }

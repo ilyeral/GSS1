@@ -8,10 +8,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import pers.hzh.gss.model.Manager;
+import pers.hzh.gss.model.Polygon;
 import pers.hzh.gss.service.ManagerService;
 import pers.hzh.gss.utils.StrUtil;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 
 @Controller
@@ -86,15 +88,27 @@ public class ManagerController {
         session.setAttribute("manager_id", null);
         return "logout";
     }
+    @RequestMapping(value = "/getColorById",method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public String getColorById(String  id){
+        logger.info("POST getColorById");
+        Manager result=managerService.selectByID(id);
 
-
+        return result.getColor();
+    }
+    @RequestMapping(value = "/getAllManager",method = RequestMethod.GET,produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public List<Manager> getAllManager(){
+        logger.info("POST getAllManager");
+        List<Manager> result=managerService.selectAllManager();
+        return result;
+    }
 
     private String loginDET(Manager manager,HttpSession session){
-        Manager theManager=null;
-        theManager=managerService.selectByID("000001");
+        Manager theManager=managerService.selectByID(manager.getId());
         String password="";
         if( theManager!=null){
-            password=managerService.selectByID("000001").getPassword();
+            password=theManager.getPassword();
         }else{
             logger.info("无此账号");
             return "fail";

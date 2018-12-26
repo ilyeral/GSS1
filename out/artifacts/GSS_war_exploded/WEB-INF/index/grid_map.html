@@ -29,7 +29,7 @@
                 <ul class="sidebar_ul_2">
                     <li class="sidebar_li_2" id="add_marker" onclick="switchAddMarker_()"><img src="../image/logout.png" class="sidebar_img_2"><a class="sidebar_a_2">添加标记</a></li>
                     <li class="sidebar_li_2" id="add_overlay"onclick="drawingManager_switch()"><img src="../image/logout.png" class="sidebar_img_2"><a class="sidebar_a_2">添加区域</a></li>
-                    <li class="sidebar_li_2" onclick="f()"><img src="../image/logout.png" class="sidebar_img_2"><a class="sidebar_a_2">主</a></li>
+                    <li class="sidebar_li_2" id='add_polygon_child'onclick="drawingManager_switch_child()"><img src="../image/logout.png" class="sidebar_img_2"><a class="sidebar_a_2">添加子区</a></li>
                     <li class="sidebar_li_2" ><img src="../image/logout.png" class="sidebar_img_2"><a class="sidebar_a_2">主</a></li>
                     <li class="sidebar_li_2" ><img src="../image/logout.png" class="sidebar_img_2"><a class="sidebar_a_2">主</a></li>
                 </ul>
@@ -49,27 +49,15 @@
                 <ul class="sidebar_ul_2"id="Marker_List">
                 </ul>
             </li>
-        </ul>
-    </div>
-    <div class="sidebar2">
-        <ul class="sidebar_bot">
-            <li >
-                <div style="border-top:1px solid #bbb;">
-                    <div class="tools"onclick="logout()">
-                        <img src="../image/logout.png" class="bar_bar_img">
-                    </div>
-                    <div class="tools"onclick="logout()">
-                        <img src="../image/logout.png" class="bar_bar_img">
-                    </div>
-                    <div class="tools"onclick="logout()">
-                        <img src="../image/logout.png" class="bar_bar_img">
-                    </div>
-                    <div class="tools"onclick="logout()">
-                        <img src="../image/logout.png" class="bar_bar_img">
-                    </div>
-                </div>
+            <li class="sidebar_li_1">
+                <a class="sidebar_a_1">区域列表</a>
+                <ul class="sidebar_ul_2"id="polygon_List">
+                </ul>
             </li>
         </ul>
+    </div>
+    <div class="sidebar2" id="the_message">
+
     </div>
 </div>
 <div id ="grid_map_div2"style="margin-left:203px;padding:0px 0px;height: 100%;  max-height:100%;">
@@ -80,16 +68,14 @@
         <h3 style='color: #9b9b9b;margin-left:25px '>区域信息</h3>
         <form  id='overlay' method='post' onsubmit='return false' action='##'>
             <div class="polygon_input_div"style="width: 222px">
-                <input class='polygon_input'style="width: 200px" type='text' placeholder="区域名称"    name='name' id='name' />
+                <input class='polygon_input'style="width: 200px" type='text' placeholder="区域名称"    name='name' id='polygon_name' />
             </div>
             <div class="polygon_input_div"style="width: 115px;padding-left: 15px; background-color: rgba(18, 18, 18, 0.66);border-radius: 16px;">
-                <select class='polygon_input_select'style="width: 100px;text-align: center" name='manager' id='manager' >
-                    <option value='0'class="polygon_input_option">管理者</option>
-                    <option value='0'class="polygon_input_option">管理者</option>
+                <select class='polygon_input_select'style="width: 100px;text-align: center" name='manager' id='polygon_manager' >
                 </select>
             </div>
             <div class="polygon_input_div"style="width: 370px;height: 280px">
-                <textarea class='polygon_input'style="width: 348px;height: 280px;padding:5px 10px 0 15px;" type='text' placeholder="备注信息"    name='note' id='note' ></textarea>
+                <textarea class='polygon_input'style="width: 348px;height: 280px;padding:5px 10px 0 15px;" type='text' placeholder="备注信息"    name='note' id='polygon_note' ></textarea>
             </div>
             <div id='sub' style='float: left;margin: 15px 20px 10px 220px;width: 70px;height: 33px;'>
                 <button  onclick='submit_overlay_form()'  style="border-radius: 6px;background-color: #078be4;width: 70px;height: 33px;font-size:14px;">提&nbsp;&nbsp;&nbsp;&nbsp;交</button>
@@ -103,7 +89,7 @@
 </div>
 <script type="text/javascript"charset="utf-8">
     var height=document.getElementById("grid_map_div2").offsetHeight;
-    document.getElementById("grid_map_div1").style.height= height-48 +"px";
+    document.getElementById("grid_map_div1").style.height= height-148 +"px";
 </script>
 </body>
 </html>

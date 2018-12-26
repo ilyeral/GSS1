@@ -82,7 +82,7 @@ public class MapController {
 
     @RequestMapping(value = "/checkPolygon",method = RequestMethod.POST,produces = "application/text;charset=UTF-8")
     @ResponseBody
-    public String checkPolygon(Polygon polygon){
+    public String checkPolygon(Polygon polygon){//返回1 不相交 返回0 相交 返回-1 超出父区
         logger.info("POST checkPolygon");
         int result=1;
         List<Polygon> polygons=polygonService.getPolygonByParent(polygon.getParent());
@@ -125,6 +125,7 @@ public class MapController {
     public List<Polygon> getAllPolygon(){
         logger.info("POST getPolygonByName");
         List<Polygon> result=polygonService.getAllPolygon();
+        logger.info(result.get(0).getDate());
         return result;
     }
     @RequestMapping(value = "/getPolygonById",method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
@@ -132,6 +133,13 @@ public class MapController {
     public Polygon getPolygonNewest(int  id){
         logger.info("POST getPolygonById");
         Polygon result=polygonService.getPolygonById(id);
+        return result;
+    }
+    @RequestMapping(value = "/getPolygonByParent",method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public List<Polygon> getPolygonByParent(int  parent){
+        logger.info("POST getPolygonByParent");
+        List<Polygon> result=polygonService.getPolygonByParent(parent);
         return result;
     }
 }

@@ -1,5 +1,19 @@
-function _isInsidePolygon(pt, poly) {
-    for (var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
-        ((poly[i].lat <= pt.lat && pt.lat < poly[j].lat) || (poly[j].lat <= pt.lat && pt.lat < poly[i].lat))  && (pt.lng < (poly[j].lng - poly[i].lng) * (pt.lat - poly[i].lat) / (poly[j].lat - poly[i].lat) + poly[i].lng)  && (c = !c);
-    return c;
+function add_marker_to_li(marker)///////////////////////////////////////////////添加到列表
+{
+    $("#polygon_List").append("" +
+        "<li class='sidebar_li_2_1' id='polygonli"+id+"'>"+
+        "<a class='sidebar_a_2_1' id='polygona"+id+"'>"+name+"</a>"+
+        "<ul class='sidebar_ul_3'id='Child_Polygon_List"+id+"'>"+
+        "</ul>"+
+        " </li>");
+    $("#polygonli"+id).attr("class",'sidebar_li_2_1');
+    $("#polygona"+id).attr("class",'sidebar_a_2_1');
+    $("#Child_Polygon_List"+id).attr("class",'sidebar_ul_3');
+
+    $("#Child_Polygon_List"+id).append("" +
+        "<li class='sidebar_li_3'id='child_polygon_li"+id+"'>"+
+        "<a class='sidebar_a_2_1'id='child_polygon_a"+id+"'>"+name+"</a>"+
+        " </li>");
+    $("#child_polygon_li"+id).attr("class",'sidebar_li_3');
+    $("#child_polygon_a"+id).attr("class",'sidebar_a_2_1');
 }

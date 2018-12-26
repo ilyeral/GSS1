@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import pers.hzh.gss.dao.ManagerDao;
 import pers.hzh.gss.model.Manager;
 
+import java.util.List;
+
 @Service
 public class ManagerService {
     @Autowired
@@ -45,5 +47,8 @@ public class ManagerService {
      */
     public int updatePassword(String id,String password){
         return managerDao.updatePassword(id,password);
+    }
+    public List<Manager> selectAllManager(){
+        return managerDao.selectAllManager();
     }
 }

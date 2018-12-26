@@ -197,16 +197,7 @@ function update_note(){////////////////////////////////////////////修改note
 }
 ///////////////////////////////////////////////////////////////////////////////
 
-///////////////////////////////////////////////////////////////////////////////
-$(document).ready(function(){                             //////树形菜单控制
-    $(".sidebar_ul_2").hide();
-    $(".sidebar_a_1").click(function(){
-        $(".sidebar_ul_2").hide();
-        $(this).next().show();
-        $(".del_marker_btn").hide();
-    });
-});
-///////////////////////////////////////////////////////////////////////////////
+
 ///////////////////////////////////////////////////////////////////////////////初始化覆盖物
 function add_all_marker(){///////////////////////////////////////////向地图中添加所有标记物-初始化
     console.log("add_all_marker");
@@ -314,16 +305,73 @@ var drawingManager;
 var drawingManager_is_switch=0;
 function drawingManager_switch(){/////////////////////////////////////////////////开关鼠标绘图
     if(drawingManager_is_switch==0){
+        parent=0;
         open_drawingManager()
+        drawingManager_is_switch=1;
+        document.getElementById('add_overlay').style.background="#404040";
     }else{
+        close_drawingManager();
+        drawingManager_is_switch=0;
+        document.getElementById('add_overlay').style.background="#8F8F8F";
+    }
+}
+
+var drawingManager_is_switch_child=0;
+var parent=0;
+function drawingManager_switch_child(){/////////////////////////////////////////////////开关鼠标绘图--子区域选中
+    if(drawingManager_is_switch_child==0){
+        polygon_add_click_listener();
+        drawingManager_is_switch_child=1;
+        document.getElementById('add_polygon_child').style.background="#404040";
+    }else{
+        polygon_remove_click_listener();
+        polygon_click_recover();
+        drawingManager_is_switch_child=0;
+        document.getElementById('add_polygon_child').style.background="#8F8F8F";
         close_drawingManager();
     }
 }
+var polygon_click= function(e){///////////////////////////////////////事件-polygon点击
+    close_drawingManager();
+    polygon_click_recover();
+    this.setStrokeOpacity(1);
+    this.setStrokeWeight(2);
+    parent=this.id;
+    console.log("选中:"+parent);//打印服务端返回的数据(调试用)
+    open_drawingManager(parent);
+}
+function polygon_click_recover() {////////////////////////////////////所有polygon覆盖物恢复形状
+    parent=0;
+    var allOverlay = map.getOverlays();
+    for (var i = 0; i < allOverlay.length; i++) {
+        if (allOverlay[i].toString() == '[object Polygon]') {
+            allOverlay[i].setStrokeOpacity(0.5);
+            allOverlay[i].setStrokeWeight(1);
+        }
+    }
+}
+function polygon_add_click_listener() {////////////////////////////////////所有polygon覆盖物添加监听
+    var allOverlay = map.getOverlays();
+    for (var i = 0; i < allOverlay.length; i++) {
+        if (allOverlay[i].toString() == '[object Polygon]') {
+            allOverlay[i].addEventListener("click",polygon_click);
+        }
+    }
+}
+function polygon_remove_click_listener() {////////////////////////////////////所有polygon覆盖物取消监听
+    var allOverlay = map.getOverlays();
+    for (var i = 0; i < allOverlay.length; i++) {
+        if (allOverlay[i].toString() == '[object Polygon]') {
+            allOverlay[i].removeEventListener("click",polygon_click);
+        }
+    }
+}
 var temp_polygon;
+var overlaycomplete;
 function open_drawingManager(){////////////////////////////////////////////////////打开鼠标绘图
     var styleOptions = {
         strokeColor:"#068791",    //边线颜色。
-        fillColor:"#851815",      //填充颜色。当参数为空时，圆形将没有填充效果。
+        fillColor:"#d4ecd6",      //填充颜色。当参数为空时，圆形将没有填充效果。
         strokeWeight: 1,       //边线的宽度，以像素为单位。
         strokeOpacity: 0.8,	   //边线透明度，取值范围0 - 1。
         fillOpacity: 0.6,      //填充的透明度，取值范围0 - 1。
@@ -344,12 +392,10 @@ function open_drawingManager(){/////////////////////////////////////////////////
             },
             polygonOptions: styleOptions, //多边形的样式
         });
-        drawingManager_is_switch=1;
     }else{
         $('.BMapLib_Drawing_panel').show();
-        drawingManager_is_switch=1;
     }
-    var overlaycomplete = function(e){
+    overlaycomplete = function(e){
         temp_polygon=e.overlay;
         temp_polygon.name="新建";
         console.log("over_drow");//打印服务端返回的数据(调试用)
@@ -360,8 +406,8 @@ function open_drawingManager(){/////////////////////////////////////////////////
         for (var i = 0; i < point.length; i++) {
             point_list+=point[i].lng+","+point[i].lat+"#";
         }
-        var msg={"point":point_list};
-        // console.log("point="+point[0]);//打印服务端返回的数据(调试用)
+        var msg={"point":point_list,"parent":parent};
+        console.log(msg);//打印服务端返回的数据(调试用)
         $.ajax({
             //几个参数需要注意一下
             type: "POST",//方法类型
@@ -387,17 +433,22 @@ function open_drawingManager(){/////////////////////////////////////////////////
         });
     };
     drawingManager.addEventListener('overlaycomplete', overlaycomplete);
-    document.getElementById('add_overlay').style.background="#404040";
 }
 function close_drawingManager() {////////////////////////////////////////////////关闭鼠标绘图
-    drawingManager.close();
-    document.getElementById('add_overlay').style.background="#8F8F8F";
+    if(drawingManager!=null){
+        drawingManager.close();
+        drawingManager.removeEventListener('overlaycomplete',overlaycomplete);
+    }
     $('.BMapLib_Drawing_panel').hide();
-    drawingManager_is_switch=0;
     closeDialog();
     delete_temp_overlay();
 }
 function openDialog(){///////////////////////////////////////////////////////////打开悬浮窗
+    clean_manager_select();
+    add_all_manager_to_select();
+    document.getElementById('polygon_name').value='';
+    document.getElementById('polygon_note').value='';
+    document.getElementById('polygon_manager').value='0';
     document.getElementById('light').style.display='block';
     document.getElementById('fade').style.display='block'
 }
@@ -405,10 +456,48 @@ function closeDialog(){/////////////////////////////////////////////////////////
     document.getElementById('light').style.display='none';
     document.getElementById('fade').style.display='none';
 }
+function add_all_manager_to_select()///////////////////////////////////////////////manager添加到select
+{
+    $.ajax({
+        //几个参数需要注意一下
+        type: "GET",//方法类型
+        dataType: "json",//预期服务器返回的数据类型
+        url: getRootPath()+"/getAllManager" ,//url
+        success: function (result) {
+            console.log(result);//打印服务端返回的数据(调试用)
+            $.each(result,function (index, item) {
+                add_manager_to_select(item);
+            });
+        },
+        error : function(e) {
+            return false;
+        }
+    });
+
+}
+function add_manager_to_select(item) {
+    console.log("add_manager_to_select");//打印服务端返回的数据(调试用)
+
+    var id=item.id;
+    var color=item.color;
+    var name=item.name;
+    $("#polygon_manager").append("<option value='"+id+"' id='option"+id+"' class='polygon_input_option'>"+name+"</option>");
+    $("#option"+id).attr("class",'polygon_input_option');
+    $("#option"+id).css('background-color',color);
+    $("#option"+id).css("opacity",0.5);
+}
+function clean_manager_select() {
+    console.log("clean_manager_select");//打印服务端返回的数据(调试用)
+
+    $("#polygon_manager").empty();
+    $("#polygon_manager").append("<option value='0' id='option0' class='polygon_input_option'>管理者</option>");
+    $("#option0").attr("class",'polygon_input_option');
+}
+
 function delete_temp_overlay() {//////////////////////////////////////////////////删除未保存覆盖物
     map.removeOverlay(temp_polygon);
 }
-function submit_overlay_form() {
+function submit_overlay_form() {//////////////////////////////////////////////////提交polygo信息 保存
     var name=document.getElementById('name').value;
     temp_polygon.name=name;
     var point=temp_polygon.getPath();
@@ -418,7 +507,7 @@ function submit_overlay_form() {
     }
     var note=document.getElementById('note').value;
     var manager=document.getElementById('manager').value;
-    var msg={"name":name,"note":note,"point":point_list,"manager":manager};
+    var msg={"name":name,"note":note,"point":point_list,"manager":manager,"parent":parent};
     // console.log("point="+point[0]);//打印服务端返回的数据(调试用)
     $.ajax({
         //几个参数需要注意一下
@@ -431,8 +520,10 @@ function submit_overlay_form() {
             console.log(result);//打印服务端返回的数据(调试用)
             if(result.id!=0){
                 closeDialog();
+                close_drawingManager();
                 delete_temp_overlay();
                 add_polygon(result);
+                polygon_click_recover();
             }else{
                 closeDialog();
                 delete_temp_overlay();
@@ -448,8 +539,23 @@ function cancel_overlay_form() {/////////////////////////////////polygon添加�
     closeDialog();
     delete_temp_overlay();
 }
-function add_polygon(result) {
+function add_polygon(polygon) {
+    add_polygon_to_map(polygon);
+    console.log("add_polygon_to_map");//打印服务端返回的数据(调试用)
+    if(polygon.parent==0){
+        add_polygon_to_li(polygon);
+        console.log("add_polygon_to_li");//打印服务端返回的数据(调试用)
+    }else{
+        add_polygon_to_li_child(polygon);
+        console.log("add_polygon_to_li_child");//打印服务端返回的数据(调试用)
+    }
 
+}
+function add_polygon_child(polygon) {
+    add_polygon_to_map(polygon);
+    add_polygon_to_li_child(polygon);
+}
+function add_polygon_to_map(result) {
     var id=result.id;
     var name=result.name;
     var note=result.note;
@@ -468,15 +574,49 @@ function add_polygon(result) {
     }
     console.log(point_list);//打印服务端返回的数据(调试用)
 
-    var polygon = new BMap.Polygon(point_list, {strokeColor: "red",fillColor: "#F1F1F1",strokeWeight: 1,strokeOpacity: 1,fillOpacity: 0.5});  //创建多边形
+    var polygon = new BMap.Polygon(point_list, {strokeColor: "red",fillColor: "#F1F1F1",strokeWeight: 1,strokeOpacity: 0.5,fillOpacity: 0.5});  //创建多边形
     console.log(polygon);//打印服务端返回的数据(调试用)
     polygon.id=id;
     polygon.name=name;
+    polygon.note=note;
+    polygon.maker=maker;
+    polygon.date=date;
+    polygon.manager=manager;
+    polygon.parent=parent;
+
     map.addOverlay(polygon);           //增加多边形
 
     console.log("add_polygon");//打印服务端返回的数据(调试用)
 }
-
+function add_polygon_to_li(polygon) {
+    var id=polygon.id;
+    var name=polygon.name;
+    $("#polygon_List").append("" +
+        "<li class='sidebar_li_2_1' id='polygonli"+id+"'>"+
+        "<a class='sidebar_a_2_1' id='polygona"+id+"'onclick='polygon_li_click("+id+")'>"+name+"</a>"+
+        "<ul class='sidebar_ul_3'id='Child_Polygon_List"+id+"'>"+
+        "</ul>"+
+        " </li>");
+    $("#polygonli"+id).attr("class",'sidebar_li_2_1');
+    $("#polygona"+id).attr("class",'sidebar_a_2_1');
+    $("#Child_Polygon_List"+id).attr("class",'sidebar_ul_3');
+    $(document).on("click",'#polygonli'+id,function(){
+        console.log('#polygonli'+id+" is click");//打印服务端返回的数据(调试用)
+        $(".sidebar_ul_3").hide();
+        $('#Child_Polygon_List'+id).show();
+    });
+}
+function add_polygon_to_li_child(polygon) {
+    var id=polygon.id;
+    var name=polygon.name;
+    var parent=polygon.parent;
+    $("#Child_Polygon_List"+parent).append("" +
+        "<li class='sidebar_li_3'id='child_polygon_li"+id+"'>"+
+        "<a class='sidebar_a_3'id='child_polygon_a"+id+"'onclick='polygon_li_click("+id+")'>"+name+"</a>"+
+        " </li>");
+    $("#child_polygon_li"+id).attr("class",'sidebar_li_3');
+    $("#child_polygon_a"+id).attr("class",'sidebar_a_3');
+}
 function add_all_polygon(){///////////////////////////////////////////向地图中添加所有标记物-初始化
     console.log("add_all_polygon");
     $.ajax({
@@ -494,9 +634,85 @@ function add_all_polygon(){///////////////////////////////////////////向地图�
             alert("异常！");
         }
     });
+}
+// function add_polygon_by_parent(parent){///////////////////////////////////////////向地图中添加所有标记物-初始化
+//     var msg={"parent":parent};
+//     console.log("add_polygon_by_parent");
+//     $.ajax({
+//         //几个参数需要注意一下
+//         type: "POST",//方法类型
+//         dataType: "json",//预期服务器返回的数据类型
+//         url: getRootPath()+"/index/getPolygonByParent" ,//url
+//         data: msg,
+//         async:true,
+//         success: function (result) {
+//             console.log(result);//打印服务端返回的数据(调试用)
+//             $.each(result,function (index, item) {
+//                 add_polygon_child(item);
+//             });
+//         },
+//         error : function(e) {
+//             alert("异常！");
+//         }
+//     });
+// }
 
+
+/////////////////////////////////////////////////////////////////////////////////////树形菜单控制
+$(document).ready(function(){
+    $(".sidebar_ul_2").hide();
+    $(".sidebar_a_1").click(function(){
+        console.log("sidebar_a_1 is click");//打印服务端返回的数据(调试用)
+        $(".sidebar_ul_2").hide();
+        $(this).next().show();
+        $(".del_marker_btn").hide();
+    });
+
+});
+
+
+var polygon_click_1= function(e){///////////////////////////////////////事件-polygon点击
+    $("#the_message").empty();
+    $("#the_message").append("" +
+        "<p>区域名称："+e.name+"</p>" +
+        "<p>备注："+e.note+"</p>" +
+        "<p>管理者："+e.manager+"</p>" +
+        "<p>创建者："+e.maker+"</p>" +
+        "<p>创建时间："+e.date+"</p>");
+}
+function polygon_li_click(id) {
+    var polygon=get_polygon_in_map_by_id(id);
+    $("#the_message").empty();
+    $("#the_message").append("" +
+        "<p>区域名称："+polygon.name+"</p>" +
+        "<p>备注："+polygon.note+"</p>" +
+        "<p>管理者："+polygon.manager+"</p>" +
+        "<p>创建者："+polygon.maker+"</p>" +
+        "<p>创建时间："+polygon.date+"</p>");
+    console.log("polygon_li_click-"+id);//打印服务端返回的数据(调试用)
+    var result=map.getViewport(polygon.getPath(),{});
+    console.log("polygon_li_click"+result.zoom);//打印服务端返回的数据(调试用)
+    console.log("polygon_li_click"+result.center.lng);//打印服务端返回的数据(调试用)
+    var point=result.center;
+    var zoom=result.zoom;
+    map.setZoom(zoom);
+    map.panTo(point);
+}
+function get_polygon_in_map_by_id(id) {
+    var allOverlay = map.getOverlays();
+    for (var i = 0; i < allOverlay.length; i++) {
+        if (allOverlay[i].toString() == '[object Polygon]') {
+            if (allOverlay[i].id== id) {
+                return allOverlay[i]
+            }
+        }
+    }
 }
 
+
+
+
+///////////////////////////////////////////////////////////////////////////////
 //开启、关闭滚轮缩放
 function enableScrollWheelZoom() {
     map.enableScrollWheelZoom(true);

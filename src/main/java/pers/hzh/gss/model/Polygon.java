@@ -1,5 +1,7 @@
 package pers.hzh.gss.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 public class Polygon extends OverLay{
@@ -10,6 +12,7 @@ public class Polygon extends OverLay{
     private int parent;
     private String maker;
     private String manager;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date date;
 
     public Polygon(){

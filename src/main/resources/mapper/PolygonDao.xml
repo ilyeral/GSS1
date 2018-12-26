@@ -34,6 +34,7 @@
         id,name,note,point,parent,maker,manager,date
         from
         polygon
+        order by parent
     </select>
     <select id="selectTheNewest" resultMap="ResultMap">
         select

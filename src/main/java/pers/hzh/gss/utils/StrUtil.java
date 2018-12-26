@@ -85,9 +85,12 @@ public class StrUtil {
     }
      public static List<Point> strToPointList(String point_list){
          String[] point_arr=point_list.split("#");
+//         for(int i=0;i<point_arr.length;i++){
+//            logger.info(point_arr[i]);
+//         }
          List<Point> point=new ArrayList<Point>();
-         for(int i=0;i<point_arr.length-1;i++){
-             Point point_=new Point(point_arr[i].split(",")[0],point_arr[i].split(",")[1]);
+         for(int i=0;i<point_arr.length;i++){
+             Point point_=new Point(Double.parseDouble(point_arr[i].split(",")[0]),Double.parseDouble(point_arr[i].split(",")[1]));
              point.add(point_);
          }
         return point;
