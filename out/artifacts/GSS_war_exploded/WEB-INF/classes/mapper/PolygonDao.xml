@@ -11,7 +11,7 @@
         <result column="parent" property="parent" jdbcType="INTEGER" />
         <result column="maker" property="maker" jdbcType="VARCHAR" />
         <result column="manager" property="manager" jdbcType="VARCHAR" />
-        <result column="date" property="date" jdbcType="DATE" />
+        <result column="date" property="date" jdbcType="TIMESTAMP" />
     </resultMap>
     <select id="selectPolygonById" resultMap="ResultMap">
         select
