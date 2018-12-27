@@ -323,51 +323,46 @@ var drawingManager_is_switch_child=0;
 var parent=0;
 function drawingManager_switch_child(){/////////////////////////////////////////////////开关鼠标绘图--子区域选中
     if(drawingManager_is_switch_child==0){
-        polygon_add_click_listener();
+        polygon_open_click_listener();
         drawingManager_is_switch_child=1;
         document.getElementById('add_polygon_child').style.background="#404040";
     }else{
-        polygon_remove_click_listener();
+        polygon_close_click_listener();
         polygon_click_recover();
         drawingManager_is_switch_child=0;
         document.getElementById('add_polygon_child').style.background="#8F8F8F";
         close_drawingManager();
     }
 }
-var polygon_click= function(e){///////////////////////////////////////事件-polygon点击
-    close_drawingManager();
-    polygon_click_recover();
-    this.setStrokeOpacity(1);
-    this.setStrokeWeight(2);
-    parent=this.id;
-    //console.log("选中:"+parent);//打印服务端返回的数据(调试用)
-    open_drawingManager(parent);
-}
+
 function polygon_click_recover() {////////////////////////////////////所有polygon覆盖物恢复形状
     parent=0;
     var allOverlay = map.getOverlays();
     for (var i = 0; i < allOverlay.length; i++) {
         if (allOverlay[i].toString() == '[object Polygon]') {
             allOverlay[i].setStrokeOpacity(0.5);
-            allOverlay[i].setStrokeWeight(1);
+            allOverlay[i].setStrokeWeight(2);
         }
     }
 }
-function polygon_add_click_listener() {////////////////////////////////////所有polygon覆盖物添加监听
-    var allOverlay = map.getOverlays();
-    for (var i = 0; i < allOverlay.length; i++) {
-        if (allOverlay[i].toString() == '[object Polygon]') {
-            allOverlay[i].addEventListener("click",polygon_click);
-        }
+var polygon_click_do=0;
+var polygon_click= function(e){///////////////////////////////////////事件-polygon点击
+    if(polygon_click_do==0){
+        return;
     }
+    close_drawingManager();
+    polygon_click_recover();
+    this.setStrokeOpacity(1);
+    this.setStrokeWeight(3);
+    parent=this.id;
+    //console.log("选中:"+parent);//打印服务端返回的数据(调试用)
+    open_drawingManager(parent);
 }
-function polygon_remove_click_listener() {////////////////////////////////////所有polygon覆盖物取消监听
-    var allOverlay = map.getOverlays();
-    for (var i = 0; i < allOverlay.length; i++) {
-        if (allOverlay[i].toString() == '[object Polygon]') {
-            allOverlay[i].removeEventListener("click",polygon_click);
-        }
-    }
+function polygon_open_click_listener() {////////////////////////////////////所有polygon覆盖物开启监听
+    polygon_click_do=1;
+}
+function polygon_close_click_listener() {////////////////////////////////////所有polygon覆盖物关闭监听
+    polygon_click_do=0;
 }
 var temp_polygon;
 var overlaycomplete;
@@ -583,9 +578,9 @@ function add_polygon_to_map(result) {
     }
     //console.log(point_list);//打印服务端返回的数据(调试用)
 
-    var polygon = new BMap.Polygon(point_list, {strokeColor: get_color_by_id(maker),fillColor: get_color_by_id(manager),strokeWeight: 1,strokeOpacity: 0.5,fillOpacity: 0.5});  //创建多边形
+    var polygon = new BMap.Polygon(point_list, {strokeColor: get_color_by_id(maker),fillColor: get_color_by_id(manager),strokeWeight: 2,strokeOpacity: 0.5,fillOpacity: 0.5});  //创建多边形
     //console.log(polygon);//打印服务端返回的数据(调试用)
-    console.log({strokeColor: get_color_by_id(maker),fillColor: get_color_by_id(id),strokeWeight: 1,strokeOpacity: 0.5,fillOpacity: 0.5});//打印服务端返回的数据(调试用)
+    console.log({strokeColor: get_color_by_id(maker),fillColor: get_color_by_id(id),strokeWeight: 2,strokeOpacity: 0.5,fillOpacity: 0.5});//打印服务端返回的数据(调试用)
     polygon.id=id;
     polygon.name=name;
     polygon.note=note;
@@ -593,6 +588,7 @@ function add_polygon_to_map(result) {
     polygon.date=date;
     polygon.manager=manager;
     polygon.parent=parent;
+    polygon.addEventListener("click",polygon_click)
     polygon.addEventListener("click",polygon_click_1)
     map.addOverlay(polygon);           //增加多边形
 
