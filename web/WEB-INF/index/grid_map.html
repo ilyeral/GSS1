@@ -30,7 +30,7 @@
                     <li class="sidebar_li_2" id="add_marker" onclick="switchAddMarker_()"><img src="./image/marker.png" class="sidebar_img_2"><a class="sidebar_a_2">添加标记</a></li>
                     <li class="sidebar_li_2" id="add_overlay"onclick="drawingManager_switch()"><img src="./image/polygon.png" class="sidebar_img_2"><a class="sidebar_a_2">添加区域</a></li>
                     <li class="sidebar_li_2" id='add_polygon_child'onclick="drawingManager_switch_child()"><img src="./image/polygonChild.png" class="sidebar_img_2"><a class="sidebar_a_2">添加子区</a></li>
-                    <li class="sidebar_li_2" ><img src="../image/logout.png" class="sidebar_img_2"><a class="sidebar_a_2">主</a></li>
+                    <li class="sidebar_li_2" id="modify_polygon" onclick="drawingManager_can_modify_switch()"><img src="./image/update.png" class="sidebar_img_2"><a class="sidebar_a_2">编辑区域</a></li>
                     <li class="sidebar_li_2" ><img src="../image/logout.png" class="sidebar_img_2"><a class="sidebar_a_2">主</a></li>
                 </ul>
             </li>
@@ -78,14 +78,22 @@
                 <textarea class='polygon_input'style="width: 348px;height: 280px;padding:5px 10px 0 15px;" type='text' placeholder="备注信息"    name='note' id='polygon_note' ></textarea>
             </div>
             <div id='sub' style='float: left;margin: 15px 20px 10px 220px;width: 70px;height: 33px;'>
-                <button  onclick='submit_overlay_form()'  style="border-radius: 6px;background-color: #078be4;width: 70px;height: 33px;font-size:14px;">提&nbsp;&nbsp;&nbsp;&nbsp;交</button>
+                <button  onclick='overlay_form_onclick()'  style="border-radius: 6px;background-color: #078be4;width: 70px;height: 33px;font-size:14px;">提&nbsp;&nbsp;&nbsp;&nbsp;交</button>
             </div>
             <div id='cancel' style='float: left;margin: 15px 20px 10px 20px;width: 70px;height: 33px;'>
-                <button  onclick='cancel_overlay_form()'  style="border-radius: 6px;background-color: #cecece;width: 70px;height: 33px;font-size:14px;">取&nbsp;&nbsp;&nbsp;&nbsp;消</button>
+                <button  onclick='cancel_overlay_form_onclick()'  style="border-radius: 6px;background-color: #cecece;width: 70px;height: 33px;font-size:14px;">取&nbsp;&nbsp;&nbsp;&nbsp;消</button>
             </div>
         </form>
     </div>
     <div id="fade" class="black_overlay"></div>
+    <div id="button_panel" class="button_panel">
+        <div class="button_div">
+            <button onclick="updata_overlay()" style="border-radius: 6px;background-color: #078be4;width: 70px;height: 30px;font-size:12px;margin-bottom: 3px;border: 0;">确&nbsp;&nbsp;&nbsp;&nbsp;认</button>
+            <button onclick="update_polygon_msg()" style="border-radius: 6px;background-color: #078be4;width: 70px;height: 30px;font-size:12px;margin-bottom: 3px;border: 0;">修改信息</button>
+            <button onclick="delete_polygon()" style="border-radius: 6px;background-color: #ff1323;width: 70px;height: 30px;font-size:12px;margin-bottom: 3px;border: 0;">删&nbsp;&nbsp;&nbsp;&nbsp;除</button>
+            <button onclick="cancel_update_polygon()" style="border-radius: 6px;background-color: #cecece;width: 70px;height: 30px;font-size:12px;margin-bottom: 3px;border: 0;">取&nbsp;&nbsp;&nbsp;&nbsp;消</button>
+        </div>
+    </div>
 </div>
 <script type="text/javascript"charset="utf-8">
     var height=document.getElementById("grid_map_div2").offsetHeight;

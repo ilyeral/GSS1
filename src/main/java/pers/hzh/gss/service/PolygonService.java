@@ -25,4 +25,13 @@ public class PolygonService {
     public List<Polygon> getPolygonByParent(int parent){
         return polygonDao.selectPolygonByParent(parent);
     }
+    public int updatePolygon(int id,String name,String note,String manager,String pont){
+        return polygonDao.updatePolygon(id,name,note,manager,pont);
+    }
+    public int deletePolygonById(int id){
+        return polygonDao.deletePolygonById(id);
+    }
+    public int deletePolygonByParent(int parent){
+        return polygonDao.deletePolygonByParent(parent);
+    }
 }

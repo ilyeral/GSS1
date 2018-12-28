@@ -50,16 +50,21 @@
         values
         (#{name},#{note},#{point},#{parent},#{maker},#{manager})
     </insert>
-    <!--<delete id="deleteMarkerByTitle">-->
-        <!--delete from marker-->
-        <!--where-->
-        <!--title=#{title}-->
-    <!--</delete>-->
-    <!--<update id="updataNoteByTitle">-->
-        <!--update marker-->
-        <!--set-->
-        <!--note=#{note},level=#{level}-->
-        <!--where-->
-        <!--title=#{title}-->
-    <!--</update>-->
+    <delete id="deletePolygonById">
+        delete from polygon
+        where
+        id=#{id}
+    </delete>
+    <delete id="deletePolygonByParent">
+        delete from polygon
+        where
+        parent=#{parent}
+    </delete>
+    <update id="updatePolygon">
+        update polygon
+        set
+        name=#{name},note=#{note},manager=#{manager},point=#{point}
+        where
+        id=#{id}
+    </update>
 </mapper>

@@ -13,4 +13,7 @@ public interface PolygonDao {
     Polygon selectPolygonById(@Param("id") int id);
     Polygon selectTheNewest();
     List<Polygon> selectPolygonByParent(@Param("parent") int parent);
+    int updatePolygon(@Param("id")int id,@Param("name")String name,@Param("note")String note,@Param("manager")String manager,@Param("point")String point);
+    int deletePolygonById(@Param("id")int id);
+    int deletePolygonByParent(@Param("parent")int parent);
 }

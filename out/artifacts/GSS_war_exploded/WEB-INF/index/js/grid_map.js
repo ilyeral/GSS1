@@ -334,6 +334,28 @@ function drawingManager_switch_child(){/////////////////////////////////////////
         close_drawingManager();
     }
 }
+var drawingManager_can_modify=0;
+function drawingManager_can_modify_switch(){/////////////////////////////////////////////////开关--区域修改
+    if(drawingManager_can_modify==0){
+        polygon_open_click_2_listener();
+        drawingManager_can_modify=1;
+        document.getElementById('modify_polygon').style.background="#404040";
+    }else{
+        polygon_close_click_2_listener();
+        drawingManager_can_modify=0;
+        document.getElementById('modify_polygon').style.background="#8F8F8F";
+        document.getElementById('button_panel').style.display='none';
+        temp_polygon.disableEditing();
+        //清除所有覆盖物
+        map.clearOverlays();
+        //清除覆盖物列表
+        $("#Marker_List").empty();
+        $("#polygon_List").empty();
+        //加载所有覆盖物
+        add_all_marker();
+        add_all_polygon();
+    }
+}
 
 function polygon_click_recover() {////////////////////////////////////所有polygon覆盖物恢复形状
     parent=0;
@@ -358,11 +380,41 @@ var polygon_click= function(e){///////////////////////////////////////事件-pol
     //console.log("选中:"+parent);//打印服务端返回的数据(调试用)
     open_drawingManager(parent);
 }
+var polygon_click_1= function(e){///////////////////////////////////////事件-polygon点击
+    //console.log(e);//打印服务端返回的数据(调试用)
+    var polygon=e.currentTarget;
+    $("#the_message").empty();
+    $("#the_message").append("" +
+        "<p>区域名称："+polygon.name+"</p>" +
+        "<p>备注："+polygon.note+"</p>" +
+        "<p>管理者："+get_name_by_id(polygon.manager)+"</p>" +
+        "<p>创建者："+get_name_by_id(polygon.maker)+"</p>" +
+        "<p>创建时间："+polygon.date+"</p>");
+}
+var polygon_click_2_do=0;
+var polygon_click_2= function(e){///////////////////////////////////////事件-polygon点击
+    if(polygon_click_2_do==0){
+        return;
+    }
+    temp_polygon=e.currentTarget;
+    temp_polygon.enableEditing();
+    polygon_click_2_do=0;
+    document.getElementById('button_panel').style.display='block'
+    document.getElementById('polygon_name').value=temp_polygon.name;
+    document.getElementById('polygon_note').value=temp_polygon.note;
+    document.getElementById('polygon_manager').value=temp_polygon.manager;
+}
 function polygon_open_click_listener() {////////////////////////////////////所有polygon覆盖物开启监听
     polygon_click_do=1;
 }
 function polygon_close_click_listener() {////////////////////////////////////所有polygon覆盖物关闭监听
     polygon_click_do=0;
+}
+function polygon_open_click_2_listener() {////////////////////////////////////所有polygon覆盖物开启监听2
+    polygon_click_2_do=1;
+}
+function polygon_close_click_2_listener() {////////////////////////////////////所有polygon覆盖物关闭监听2
+    polygon_click_2_do=0;
 }
 var temp_polygon;
 var overlaycomplete;
@@ -416,6 +468,7 @@ function open_drawingManager(){/////////////////////////////////////////////////
             success: function (result) {
                 //console.log(result);//打印服务端返回的数据(调试用)
                 if(result=="1"){
+                    overlay_form_onclick_type=0;
                     openDialog();
                 }else if(result=="0"){
                     delete_temp_overlay();
@@ -447,6 +500,13 @@ function openDialog(){//////////////////////////////////////////////////////////
     document.getElementById('polygon_name').value='';
     document.getElementById('polygon_note').value='';
     document.getElementById('polygon_manager').value='0';
+    document.getElementById('light').style.display='block';
+    document.getElementById('fade').style.display='block'
+}
+function openDialog_disclean(){///////////////////////////////////////////////////////////打开悬浮窗-不清除信息
+    clean_manager_select();
+    add_all_manager_to_select();
+    document.getElementById('polygon_manager').value=temp_polygon.manager;
     document.getElementById('light').style.display='block';
     document.getElementById('fade').style.display='block'
 }
@@ -494,12 +554,26 @@ function clean_manager_select() {
     //console.log("clean_manager_select");//打印服务端返回的数据(调试用)
 
     $("#polygon_manager").empty();
-    $("#polygon_manager").append("<option value='0' id='option0' class='polygon_input_option'>管理者</option>");
-    $("#option0").attr("class",'polygon_input_option');
 }
 
 function delete_temp_overlay() {//////////////////////////////////////////////////删除未保存覆盖物
     map.removeOverlay(temp_polygon);
+}
+var overlay_form_onclick_type=0;
+function overlay_form_onclick() {
+    if(overlay_form_onclick_type==0){
+        submit_overlay_form();
+    }else{
+        updata_overlay();
+    }
+}
+function cancel_overlay_form_onclick() {
+    if(overlay_form_onclick_type==0){
+        cancel_overlay_form();
+    }else{
+        closeDialog();
+        drawingManager_can_modify_switch();
+    }
 }
 function submit_overlay_form() {//////////////////////////////////////////////////提交polygo信息 保存
     var name=document.getElementById('polygon_name').value;
@@ -521,13 +595,20 @@ function submit_overlay_form() {////////////////////////////////////////////////
         data: msg,
         async:true,
         success: function (result) {
-            //console.log(result);//打印服务端返回的数据(调试用)
-            if(result.id!=0){
+            console.log("addPolygon:"+result.id);//打印服务端返回的数据(调试用)
+            if(result.id>0){
+                if(drawingManager_is_switch==1){
+                    drawingManager_switch();
+                }
                 closeDialog();
                 close_drawingManager();
                 delete_temp_overlay();
                 add_polygon(result);
                 polygon_click_recover();
+            }else if(result.id=-1){
+                closeDialog();
+                delete_temp_overlay();
+                alert("添加失败！无权限！");
             }else{
                 closeDialog();
                 delete_temp_overlay();
@@ -538,6 +619,88 @@ function submit_overlay_form() {////////////////////////////////////////////////
             return false;
         }
     });
+}
+function updata_overlay() {//////////////////////////////////////////////////右下角修改polygo信息
+    var id=temp_polygon.id;
+    var point=temp_polygon.getPath();
+    var point_list="";
+    for (var i = 0; i < point.length; i++) {
+        point_list+=point[i].lng+","+point[i].lat+"#";
+    }
+    var name=document.getElementById('polygon_name').value;
+    var note=document.getElementById('polygon_note').value;
+    var manager=document.getElementById('polygon_manager').value;
+    var parent=temp_polygon.parent;
+    var msg={"id":id,"name":name,"note":note,"point":point_list,"manager":manager,"parent":parent};
+    console.log(msg);//打印服务端返回的数据(调试用)
+    $.ajax({
+        //几个参数需要注意一下
+        type: "POST",//方法类型
+        dataType: "text",//预期服务器返回的数据类型
+        url: getRootPath()+"/index/updatePolygon" ,//url
+        data: msg,
+        async:true,
+        success: function (result) {
+            //console.log(result);//打印服务端返回的数据(调试用)
+            if(result==1){
+                closeDialog();
+                drawingManager_can_modify_switch();
+            }else{
+                alert("修改信息失败！");
+                closeDialog();
+                drawingManager_can_modify_switch();
+            }
+        },
+        error : function(e) {
+            return false;
+        }
+    });
+}
+function delete_overlay_by_id() {//////////////////////////////////////////////////右下角修改polygo信息
+    var id=temp_polygon.id;
+    var msg={"id":id};
+    console.log(msg);//打印服务端返回的数据(调试用)
+    $.ajax({
+        //几个参数需要注意一下
+        type: "POST",//方法类型
+        dataType: "text",//预期服务器返回的数据类型
+        url: getRootPath()+"/index/deletePolygonById" ,//url
+        data: msg,
+        async:true,
+        success: function (result) {
+            //console.log(result);//打印服务端返回的数据(调试用)
+            if(result==1){
+                closeDialog();
+                drawingManager_can_modify_switch();
+            }else if(result==-1){
+                alert("删除失败！无权限");
+                closeDialog();
+                drawingManager_can_modify_switch();
+            }else{
+                alert("删除失败！");
+                closeDialog();
+                drawingManager_can_modify_switch();
+            }
+        },
+        error : function(e) {
+            return false;
+        }
+    });
+}
+
+function update_polygon_msg() {///////////////////////////右下角修改信息按钮
+    overlay_form_onclick_type=1;
+    document.getElementById('button_panel').style.display='none';
+    openDialog_disclean();
+}
+function cancel_update_polygon() {
+    drawingManager_can_modify_switch();
+}
+function delete_polygon() {
+    var msg=prompt("请确认是否删除，如果删除，该区域的下级区域会被一并删除！（删除输入：Y）","N");
+    if(msg=="Y"){
+        delete_overlay_by_id();
+    }
 }
 function cancel_overlay_form() {/////////////////////////////////polygon添加信息页面的取消按钮
     closeDialog();
@@ -588,8 +751,9 @@ function add_polygon_to_map(result) {
     polygon.date=date;
     polygon.manager=manager;
     polygon.parent=parent;
-    polygon.addEventListener("click",polygon_click)
-    polygon.addEventListener("click",polygon_click_1)
+    polygon.addEventListener("click",polygon_click);
+    polygon.addEventListener("click",polygon_click_1);
+    polygon.addEventListener("click",polygon_click_2);
     map.addOverlay(polygon);           //增加多边形
 
     //console.log("add_polygon");//打印服务端返回的数据(调试用)
@@ -638,31 +802,29 @@ function add_all_polygon(){///////////////////////////////////////////向地图�
             });
         },
         error : function(e) {
+            //alert("异常！");
+        }
+    });
+}
+function add_polygon_by_id(id){///////////////////////////////////////////向地图中添加所有标记物-初始化
+    var msg={"id":id};
+    //console.log("add_polygon_by_id");
+    $.ajax({
+        //几个参数需要注意一下
+        type: "POST",//方法类型
+        dataType: "json",//预期服务器返回的数据类型
+        url: getRootPath()+"/index/getPolygonById" ,//url
+        data: msg,
+        async:false,
+        success: function (result) {
+            //console.log(result);//打印服务端返回的数据(调试用)
+            add_polygon_to_map(result);
+        },
+        error : function(e) {
             alert("异常！");
         }
     });
 }
-// function add_polygon_by_parent(parent){///////////////////////////////////////////向地图中添加所有标记物-初始化
-//     var msg={"parent":parent};
-//     //console.log("add_polygon_by_parent");
-//     $.ajax({
-//         //几个参数需要注意一下
-//         type: "POST",//方法类型
-//         dataType: "json",//预期服务器返回的数据类型
-//         url: getRootPath()+"/index/getPolygonByParent" ,//url
-//         data: msg,
-//         async:true,
-//         success: function (result) {
-//             //console.log(result);//打印服务端返回的数据(调试用)
-//             $.each(result,function (index, item) {
-//                 add_polygon_child(item);
-//             });
-//         },
-//         error : function(e) {
-//             alert("异常！");
-//         }
-//     });
-// }
 
 
 /////////////////////////////////////////////////////////////////////////////////////树形菜单控制
@@ -678,25 +840,15 @@ $(document).ready(function(){
 });
 
 
-var polygon_click_1= function(e){///////////////////////////////////////事件-polygon点击
-    //console.log(e);//打印服务端返回的数据(调试用)
-    var polygon=e.currentTarget;
-    $("#the_message").empty();
-    $("#the_message").append("" +
-        "<p>区域名称："+polygon.name+"</p>" +
-        "<p>备注："+polygon.note+"</p>" +
-        "<p>管理者："+polygon.manager+"</p>" +
-        "<p>创建者："+polygon.maker+"</p>" +
-        "<p>创建时间："+polygon.date+"</p>");
-}
+
 function polygon_li_click(id) {
     var polygon=get_polygon_in_map_by_id(id);
     $("#the_message").empty();
     $("#the_message").append("" +
         "<p>区域名称："+polygon.name+"</p>" +
         "<p>备注："+polygon.note+"</p>" +
-        "<p>管理者："+polygon.manager+"</p>" +
-        "<p>创建者："+polygon.maker+"</p>" +
+        "<p>管理者："+get_name_by_id(polygon.manager)+"</p>" +
+        "<p>创建者："+get_name_by_id(polygon.maker)+"</p>" +
         "<p>创建时间："+polygon.date+"</p>");
     //console.log("polygon_li_click-"+id);//打印服务端返回的数据(调试用)
     var result=map.getViewport(polygon.getPath(),{});
@@ -732,7 +884,13 @@ function get_color_by_id(id) {
         }
     }
 }
-
+function get_name_by_id(id) {
+    for(var i=0;i<manager.length;i++){
+        if(manager[i].id==id){
+            return manager[i].name;
+        }
+    }
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 //开启、关闭滚轮缩放

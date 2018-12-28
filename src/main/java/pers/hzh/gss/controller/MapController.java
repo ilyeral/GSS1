@@ -3,6 +3,7 @@ package pers.hzh.gss.controller;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -104,11 +105,22 @@ public class MapController {
 
     @RequestMapping(value = "/addPolygon",method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public Polygon addPolygon(Polygon polygon,HttpSession session){
+    public Polygon addPolygon(Polygon polygon,HttpSession session){//可以创建大区 管理者可以创建小区
         logger.info("POST addPolygon");
         int result=0;
         Polygon result_polygon=new Polygon();
+        logger.info("new result_polygon");
+        if(!session.getAttribute("manager_id").equals("000001")){
+            logger.info(session.getAttribute("manager_id"));
+           logger.info("manager_id!=000001");
+           Polygon polygon1=polygonService.getPolygonById(polygon.getParent());
+           if(!polygon1.getManager().equals(session.getAttribute("manager_id"))){
+               result_polygon.setId(-1);
+               return result_polygon;
+           }
+        }
         try {
+            logger.info("try addPolygon");
             result = polygonService.addPolygon(polygon.getName(), polygon.getNote(), (String) session.getAttribute("manager_id"), polygon.getManager(), polygon.getParent(), polygon.getPoint());
         }catch (Exception e){
             logger.info(result_polygon.getId());
@@ -141,5 +153,56 @@ public class MapController {
         logger.info("POST getPolygonByParent");
         List<Polygon> result=polygonService.getPolygonByParent(parent);
         return result;
+    }
+    @RequestMapping(value = "/updatePolygon",method = RequestMethod.POST,produces = "application/text;charset=UTF-8")
+    @ResponseBody
+    public String updatePolygon(Polygon polygon){//
+        logger.info("POST updatePolygon");
+        int check=1;
+        List<Polygon> polygons=polygonService.getPolygonByParent(polygon.getParent());
+        List<Polygon> polygons1=polygonService.getPolygonByParent(polygon.getId());
+        for(int i=0;i<polygons.size();i++){
+            if(polygon.getId()!=polygons.get(i).getId()) {
+                if (OverLayUtil.polygonIntersect(polygon, polygons.get(i)) != 0) {
+                    logger.info("与同级冲突:" + i);
+                    check = 0;
+                }
+            }
+        }
+        for(int i=0;i<polygons1.size();i++){
+            if(OverLayUtil.polygonIntersect(polygon,polygons1.get(i))!=3){
+                logger.info("与子块冲突:"+i);
+                check=0;
+            }
+        }
+        Polygon polygon1;
+        if(polygon.getParent()!=0){
+            polygon1=polygonService.getPolygonById(polygon.getParent());
+            if(OverLayUtil.polygonIntersect(polygon,polygon1)!=2){
+                logger.info("与父级冲突");
+                check=-1;
+            }
+        }
+        int result=0;
+        if(check==1){
+            result=polygonService.updatePolygon(polygon.getId(), polygon.getName(), polygon.getNote(), polygon.getManager(), polygon.getPoint());
+        }
+        logger.info("check:"+check);
+        return result+"";
+    }
+    @RequestMapping(value = "/deletePolygonById",method = RequestMethod.POST,produces = "application/text;charset=UTF-8")
+    @ResponseBody
+    @Transactional
+    public String deletePolygonById(Polygon polygon,HttpSession session){//只有boss和创建者有权限删除
+        logger.info("POST deletePolygonById");
+        if(!session.getAttribute("manager_id").equals("000001")){
+            Polygon polygon1=polygonService.getPolygonById(polygon.getId());
+            if(!polygon1.getMaker().equals(session.getAttribute("manager_id"))){
+                return "-1";
+            }
+        }
+        int result=polygonService.deletePolygonById(polygon.getId());
+        int result1=polygonService.deletePolygonByParent(polygon.getId());
+        return result+"";
     }
 }
